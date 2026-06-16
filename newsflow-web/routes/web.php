@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PreferencesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,9 @@ use Inertia\Inertia;
 Route::get('/', fn () => Inertia::render('Welcome'))->name('home');
 
 Route::get('/pricing', fn () => Inertia::render('Pricing'))->name('pricing');
+
+Route::get('/privacy', fn () => Inertia::render('Legal/Privacy'))->name('privacy');
+Route::get('/terms', fn () => Inertia::render('Legal/Terms'))->name('terms');
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // News preferences (refresh hour + timezone)
+    Route::patch('/preferences', [PreferencesController::class, 'update'])->name('preferences.update');
 
     // Billing
     Route::get('/billing', [BillingController::class, 'index'])->name('billing');

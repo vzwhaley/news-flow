@@ -10,20 +10,20 @@ Artisan::command('inspire', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Daily article refresh — 6:00 AM in the app timezone
+| Article refresh — hourly, honoring each user's chosen hour + timezone
 |--------------------------------------------------------------------------
 |
-| Scours configured news sources each morning for fresh, popular stories on
-| every topic and applies the "keep 12, prepend new, drop oldest" rule so
-| each user's feed is up to date when they wake up.
+| Runs every hour and refreshes only the users whose chosen refresh hour
+| matches the current hour in their own timezone (default 6 AM). This lets a
+| user in any timezone get fresh stories at the time they picked, applying the
+| "keep 12, prepend new, drop oldest" rule.
 |
 | Requires the system cron to invoke `php artisan schedule:run` every minute
 | (on Windows, a Task Scheduler entry). See README for setup.
 |
 */
-Schedule::command('newsflow:refresh')
-    ->dailyAt('06:00')
-    ->timezone(config('app.timezone'))
+Schedule::command('newsflow:refresh --due')
+    ->hourly()
     ->withoutOverlapping()
     ->runInBackground()
-    ->description('Daily NewsFlow article refresh for all topics.');
+    ->description('Hourly NewsFlow refresh for users due this hour.');

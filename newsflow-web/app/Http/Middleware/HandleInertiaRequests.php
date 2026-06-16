@@ -47,6 +47,7 @@ class HandleInertiaRequests extends Middleware
                     'topic_count'         => $user->topics()->count(),
                     'remaining_topics'    => $user->remainingTopicSlots(),
                     'refresh_hour'        => $user->refresh_hour,
+                    'timezone'            => $user->timezone,
                 ] : null,
             ],
 

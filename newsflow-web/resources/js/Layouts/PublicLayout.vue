@@ -69,8 +69,10 @@ const year = new Date().getFullYear();
                 <p class="text-sm text-gray-500">
                     &copy; {{ year }} NewsFlow — a Moon Whale Media product. Build your own newsroom.
                 </p>
-                <div class="flex gap-4 text-sm text-gray-500">
+                <div class="flex flex-wrap gap-4 text-sm text-gray-500">
                     <Link :href="route('pricing')" class="hover:text-ink">Pricing</Link>
+                    <Link :href="route('privacy')" class="hover:text-ink">Privacy</Link>
+                    <Link :href="route('terms')" class="hover:text-ink">Terms</Link>
                     <Link :href="route('login')" class="hover:text-ink">Log in</Link>
                 </div>
             </div>

@@ -3,22 +3,29 @@
 namespace App\Console\Commands;
 
 use App\Models\Topic;
+use App\Models\User;
 use App\Services\Articles\TopicRefresher;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 /**
- * Daily article refresh. Scours configured sources for fresh, popular stories
- * for every topic and applies the "keep 12, prepend new, drop oldest" rule.
+ * Article refresh. Scours configured sources for fresh, popular stories for
+ * topics and applies the "keep 12, prepend new, drop oldest" rule.
  *
- * Scheduled for 06:00 (see routes/console.php). Can also be run on demand:
- *
- *   php artisan newsflow:refresh                 # every topic
+ *   php artisan newsflow:refresh                 # every topic (manual/full)
+ *   php artisan newsflow:refresh --due           # only topics whose owner's
+ *                                                # local hour == now (scheduled)
  *   php artisan newsflow:refresh --topic=42      # one topic by id
  *   php artisan newsflow:refresh --user=7        # all of one user's topics
+ *
+ * The scheduler (routes/console.php) runs this hourly with --due so each user's
+ * feed refreshes at their chosen hour in their own timezone.
  */
 class RefreshArticles extends Command
 {
     protected $signature = 'newsflow:refresh
+        {--due : Only refresh topics whose owner\'s chosen hour matches now (in their timezone)}
         {--topic= : Refresh only this topic id}
         {--user= : Refresh only this user\'s topics}';
 
@@ -34,6 +41,18 @@ class RefreshArticles extends Command
 
         if ($userId = $this->option('user')) {
             $query->where('user_id', $userId);
+        }
+
+        if ($this->option('due')) {
+            $dueUserIds = $this->usersDueNow();
+
+            if (empty($dueUserIds)) {
+                $this->info('No users due for a refresh this hour.');
+
+                return self::SUCCESS;
+            }
+
+            $query->whereIn('user_id', $dueUserIds);
         }
 
         $topics = $query->get();
@@ -55,7 +74,7 @@ class RefreshArticles extends Command
 
                 $this->line(sprintf(
                     '  • %-28s +%d new, -%d old, %d total',
-                    \Illuminate\Support\Str::limit($stats['topic'], 26),
+                    Str::limit($stats['topic'], 26),
                     $stats['added'],
                     $stats['dropped'],
                     $stats['total'],
@@ -69,5 +88,33 @@ class RefreshArticles extends Command
         $this->info("Done. {$totalAdded} new article(s) added across all topics.");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * IDs of users whose chosen refresh hour equals the current hour in their
+     * own timezone. Falls back to UTC for any unset/invalid timezone.
+     *
+     * @return array<int, int>
+     */
+    private function usersDueNow(): array
+    {
+        $now = Carbon::now('UTC');
+
+        return User::query()
+            ->whereHas('topics')
+            ->get(['id', 'refresh_hour', 'timezone'])
+            ->filter(function (User $user) use ($now) {
+                $tz = $user->timezone ?: 'UTC';
+
+                try {
+                    $localHour = (int) $now->copy()->setTimezone($tz)->format('G');
+                } catch (\Throwable $e) {
+                    $localHour = (int) $now->format('G');
+                }
+
+                return $localHour === (int) $user->refresh_hour;
+            })
+            ->pluck('id')
+            ->all();
     }
 }
