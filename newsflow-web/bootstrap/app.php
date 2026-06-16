@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -39,4 +41,29 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        // Render recoverable HTTP errors through Inertia so visitors see an
+        // on-brand page. 500/503 are intentionally left to the standalone
+        // Blade fallbacks (errors/{500,503}.blade.php) since Inertia/Vite may
+        // be the thing that broke. Skipped in local/testing to keep the rich
+        // stack traces, and for JSON/API consumers.
+        $exceptions->respond(function (Response $response, \Throwable $exception, Request $request) {
+            if (app()->environment(['local', 'testing'])) {
+                return $response;
+            }
+
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return $response;
+            }
+
+            $status = $response->getStatusCode();
+
+            if (in_array($status, [403, 404, 419, 429], true)) {
+                return Inertia::render("Errors/{$status}")
+                    ->toResponse($request)
+                    ->setStatusCode($status);
+            }
+
+            return $response;
+        });
     })->create();
