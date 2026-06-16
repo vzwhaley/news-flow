@@ -70,6 +70,15 @@ function select(id) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// Expand/collapse of parent categories in the sidebar (expanded by default).
+const collapsed = ref({});
+function toggle(id) {
+    collapsed.value = { ...collapsed.value, [id]: !collapsed.value[id] };
+}
+function isCollapsed(id) {
+    return !!collapsed.value[id];
+}
+
 // Sibling-aware reorder.
 function move({ id, dir }) {
     let siblings = props.topics;
@@ -141,13 +150,25 @@ function quickAdd(name) {
 
                         <template v-for="t in topics" :key="t.id">
                             <div class="group flex items-center">
+                                <!-- Expand/collapse toggle (parents with children) -->
+                                <button
+                                    v-if="t.children && t.children.length"
+                                    @click="toggle(t.id)"
+                                    class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                                    :aria-expanded="!isCollapsed(t.id)"
+                                    :title="isCollapsed(t.id) ? 'Expand' : 'Collapse'"
+                                >
+                                    <svg class="h-4 w-4 transition-transform" :class="{ '-rotate-90': isCollapsed(t.id) }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                                </button>
+                                <span v-else class="w-6 shrink-0" aria-hidden="true"></span>
+
                                 <button
                                     @click="select(t.id)"
-                                    class="flex flex-1 items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                                    class="flex flex-1 items-center gap-2 rounded-md px-2 py-2 text-left text-sm"
                                     :class="selected === t.id ? 'bg-brand-50 font-semibold text-brand-700' : 'text-gray-700 hover:bg-gray-100'"
                                 >
-                                    <svg v-if="t.children && t.children.length" class="h-4 w-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
                                     <span class="truncate">{{ t.name }}</span>
+                                    <span v-if="t.children && t.children.length && isCollapsed(t.id)" class="ml-auto text-xs text-gray-400">{{ t.children.length }}</span>
                                 </button>
                                 <button
                                     @click="startSubtopic(t.id)"
@@ -157,16 +178,18 @@ function quickAdd(name) {
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                                 </button>
                             </div>
-                            <!-- Children -->
-                            <button
-                                v-for="c in (t.children || [])"
-                                :key="c.id"
-                                @click="select(c.id)"
-                                class="flex w-full items-center gap-2 rounded-md py-1.5 pl-9 pr-3 text-left text-sm"
-                                :class="selected === c.id ? 'bg-brand-50 font-semibold text-brand-700' : 'text-gray-600 hover:bg-gray-100'"
-                            >
-                                <span class="truncate">{{ c.name }}</span>
-                            </button>
+                            <!-- Children (hidden when the category is collapsed) -->
+                            <template v-if="!isCollapsed(t.id)">
+                                <button
+                                    v-for="c in (t.children || [])"
+                                    :key="c.id"
+                                    @click="select(c.id)"
+                                    class="flex w-full items-center gap-2 rounded-md py-1.5 pl-11 pr-3 text-left text-sm"
+                                    :class="selected === c.id ? 'bg-brand-50 font-semibold text-brand-700' : 'text-gray-600 hover:bg-gray-100'"
+                                >
+                                    <span class="truncate">{{ c.name }}</span>
+                                </button>
+                            </template>
                         </template>
                     </nav>
                 </aside>
