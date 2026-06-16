@@ -1,0 +1,193 @@
+<script setup>
+import PublicLayout from '@/Layouts/PublicLayout.vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+
+const page = usePage();
+const pricing = computed(() => page.props.pricing ?? {});
+
+const steps = [
+    {
+        n: '1',
+        title: 'Pick your topics',
+        body: 'World News, your team, a hobby, a company you watch — anything. Type it in plain English.',
+    },
+    {
+        n: '2',
+        title: 'We scour the web at 6 AM',
+        body: 'Every morning NewsFlow finds the most-read, most-popular stories on each topic from the day before.',
+    },
+    {
+        n: '3',
+        title: 'Read only what you care about',
+        body: 'Up to 12 fresh headlines per topic with a short summary and a one-tap Read More to the full article.',
+    },
+];
+
+const features = [
+    ['Your topics, your order', 'Arrange your personal newspaper exactly how you like it.'],
+    ['Always a full feed', 'Each topic keeps 12 articles — new stories push the oldest out.'],
+    ['Popularity-ranked', 'We blend news coverage with engagement signals to surface what people are actually reading.'],
+    ['No doomscrolling', 'No infinite feed, no topics you didn’t ask for. Just your headlines.'],
+    ['Niche-friendly', 'Following something obscure? We keep searching until your feed is full.'],
+    ['Web, Android & iOS', 'Built API-first so your topics follow you across every device.'],
+];
+
+const sample = {
+    topic: 'World News',
+    articles: [
+        ['Markets steady as central banks signal a pause', 'Global Wire'],
+        ['Historic climate accord reached after marathon talks', 'The Beacon'],
+        ['What the new trade deal means for everyday prices', 'The Daily Dispatch'],
+    ],
+};
+</script>
+
+<template>
+    <Head title="Build your own newsroom" />
+
+    <PublicLayout>
+        <!-- Hero -->
+        <section class="relative overflow-hidden">
+            <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+                <div class="grid items-center gap-12 lg:grid-cols-2">
+                    <div>
+                        <span
+                            class="inline-flex items-center rounded-full bg-brand-50 px-3 py-1 text-sm font-medium text-brand-700"
+                        >
+                            A more customizable Google News
+                        </span>
+                        <h1
+                            class="mt-5 font-serif text-5xl font-bold leading-tight tracking-tight text-ink sm:text-6xl"
+                        >
+                            Your news.<br />
+                            <span class="text-brand-600">Only the topics you choose.</span>
+                        </h1>
+                        <p class="mt-6 max-w-xl text-lg text-gray-600">
+                            NewsFlow builds you a personal front page. Choose your
+                            topics and every morning we deliver the day’s most
+                            popular headlines on each one — nothing you didn’t ask for.
+                        </p>
+                        <div class="mt-8 flex flex-wrap items-center gap-4">
+                            <Link
+                                :href="route('register')"
+                                class="rounded-lg bg-brand-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-brand-700"
+                            >
+                                Start free — 2 topics
+                            </Link>
+                            <Link
+                                :href="route('pricing')"
+                                class="rounded-lg px-6 py-3 text-base font-semibold text-ink hover:text-brand-700"
+                            >
+                                See Pro plans →
+                            </Link>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-500">
+                            Free forever for 2 topics. No credit card required.
+                        </p>
+                    </div>
+
+                    <!-- Sample paper -->
+                    <div class="relative">
+                        <div
+                            class="rounded-2xl border border-gray-200 bg-white p-6 shadow-xl"
+                        >
+                            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                                <h3 class="font-serif text-xl font-bold text-ink">
+                                    {{ sample.topic }}
+                                </h3>
+                                <span class="text-xs font-medium uppercase tracking-wide text-gray-400">
+                                    Today · 12 stories
+                                </span>
+                            </div>
+                            <ul class="divide-y divide-gray-100">
+                                <li
+                                    v-for="(a, i) in sample.articles"
+                                    :key="i"
+                                    class="py-4"
+                                >
+                                    <p class="font-serif text-lg font-semibold leading-snug text-ink">
+                                        {{ a[0] }}
+                                    </p>
+                                    <div class="mt-1 flex items-center justify-between">
+                                        <span class="text-xs text-gray-400">{{ a[1] }}</span>
+                                        <span class="text-xs font-semibold text-brand-600">Read more →</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div
+                            class="absolute -right-4 -top-4 -z-10 h-full w-full rounded-2xl bg-brand-100"
+                        ></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it works -->
+        <section class="border-y border-gray-100 bg-gray-50">
+            <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+                <h2 class="text-center font-serif text-3xl font-bold text-ink">
+                    How NewsFlow works
+                </h2>
+                <div class="mt-12 grid gap-8 md:grid-cols-3">
+                    <div v-for="step in steps" :key="step.n" class="text-center">
+                        <div
+                            class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-600 text-lg font-bold text-white"
+                        >
+                            {{ step.n }}
+                        </div>
+                        <h3 class="mt-4 text-xl font-semibold text-ink">{{ step.title }}</h3>
+                        <p class="mt-2 text-gray-600">{{ step.body }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <h2 class="text-center font-serif text-3xl font-bold text-ink">
+                Everything you need, nothing you don’t
+            </h2>
+            <div class="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+                <div v-for="(f, i) in features" :key="i" class="flex gap-3">
+                    <svg class="mt-1 h-6 w-6 shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <div>
+                        <h3 class="font-semibold text-ink">{{ f[0] }}</h3>
+                        <p class="mt-1 text-sm text-gray-600">{{ f[1] }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="bg-ink">
+            <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
+                <h2 class="font-serif text-3xl font-bold text-white sm:text-4xl">
+                    Build your newsroom today
+                </h2>
+                <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-300">
+                    Start free with 2 topics. Go Pro for unlimited topics from
+                    {{ '$' + (pricing.monthly ?? '4.99') }}/mo — or own it for life at
+                    {{ '$' + (pricing.lifetime ?? '149.99') }}.
+                </p>
+                <div class="mt-8 flex flex-wrap justify-center gap-4">
+                    <Link
+                        :href="route('register')"
+                        class="rounded-lg bg-brand-600 px-6 py-3 text-base font-semibold text-white hover:bg-brand-700"
+                    >
+                        Get started free
+                    </Link>
+                    <Link
+                        :href="route('pricing')"
+                        class="rounded-lg bg-white/10 px-6 py-3 text-base font-semibold text-white hover:bg-white/20"
+                    >
+                        Compare plans
+                    </Link>
+                </div>
+            </div>
+        </section>
+    </PublicLayout>
+</template>

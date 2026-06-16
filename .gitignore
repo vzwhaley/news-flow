@@ -1,0 +1,78 @@
+# ===== NewsFlow monorepo .gitignore =====
+# Covers: Laravel/PHP (newsflow-web), Node/Vite, and future Android/iOS apps.
+
+# ---- Secrets & local data (NEVER commit) ----
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.jks
+*.keystore
+*.mobileprovision
+keystore.properties
+newsflow-web/database/*.sqlite
+newsflow-web/database/*.sqlite-journal
+
+# ---- Dependencies ----
+node_modules/
+vendor/
+.pnp
+.pnp.js
+
+# ---- Claude Code local (personal, not shared) ----
+.claude/settings.local.json
+
+# ---- OS / editor noise ----
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+.idea/
+*.iml
+.vscode/
+
+# ---- Logs / caches ----
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.phpunit.result.cache
+.phpunit.cache/
+
+# ---- Laravel / PHP (newsflow-web) ----
+newsflow-web/public/build/
+newsflow-web/public/hot
+newsflow-web/storage/*.key
+newsflow-web/storage/framework/cache/*
+newsflow-web/storage/framework/sessions/*
+newsflow-web/storage/framework/views/*
+newsflow-web/storage/framework/testing/*
+newsflow-web/storage/logs/*
+newsflow-web/bootstrap/cache/*.php
+newsflow-web/.phpunit.result.cache
+newsflow-web/auth.json
+
+# ---- Node / Vite build output ----
+dist-ssr/
+*.local
+
+# ---- Android (future newsflow-android) ----
+newsflow-android/.gradle/
+newsflow-android/.kotlin/
+newsflow-android/build/
+newsflow-android/**/build/
+newsflow-android/local.properties
+newsflow-android/.cxx/
+newsflow-android/captures/
+*.apk
+*.aab
+
+# ---- Xcode / Swift (future newsflow-ios) ----
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.build/
+Pods/
