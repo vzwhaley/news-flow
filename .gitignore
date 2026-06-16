@@ -23,6 +23,7 @@ vendor/
 
 # ---- Claude Code local (personal, not shared) ----
 .claude/settings.local.json
+.claude/launch.json
 
 # ---- OS / editor noise ----
 .DS_Store
