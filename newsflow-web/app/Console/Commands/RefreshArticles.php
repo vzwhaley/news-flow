@@ -3,10 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Topic;
-use App\Models\User;
 use App\Services\Articles\TopicRefresher;
+use App\Services\RefreshWindow;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -44,7 +43,7 @@ class RefreshArticles extends Command
         }
 
         if ($this->option('due')) {
-            $dueUserIds = $this->usersDueNow();
+            $dueUserIds = RefreshWindow::dueUserIds();
 
             if (empty($dueUserIds)) {
                 $this->info('No users due for a refresh this hour.');
@@ -88,33 +87,5 @@ class RefreshArticles extends Command
         $this->info("Done. {$totalAdded} new article(s) added across all topics.");
 
         return self::SUCCESS;
-    }
-
-    /**
-     * IDs of users whose chosen refresh hour equals the current hour in their
-     * own timezone. Falls back to UTC for any unset/invalid timezone.
-     *
-     * @return array<int, int>
-     */
-    private function usersDueNow(): array
-    {
-        $now = Carbon::now('UTC');
-
-        return User::query()
-            ->whereHas('topics')
-            ->get(['id', 'refresh_hour', 'timezone'])
-            ->filter(function (User $user) use ($now) {
-                $tz = $user->timezone ?: 'UTC';
-
-                try {
-                    $localHour = (int) $now->copy()->setTimezone($tz)->format('G');
-                } catch (\Throwable $e) {
-                    $localHour = (int) $now->format('G');
-                }
-
-                return $localHour === (int) $user->refresh_hour;
-            })
-            ->pluck('id')
-            ->all();
     }
 }

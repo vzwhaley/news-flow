@@ -17,14 +17,16 @@ class PreferencesTest extends TestCase
 
         $this->actingAs($user)
             ->patch(route('preferences.update'), [
-                'refresh_hour' => 7,
-                'timezone'     => 'America/Chicago',
+                'refresh_hour'   => 7,
+                'timezone'       => 'America/Chicago',
+                'digest_enabled' => true,
             ])
             ->assertRedirect();
 
         $user->refresh();
         $this->assertSame(7, $user->refresh_hour);
         $this->assertSame('America/Chicago', $user->timezone);
+        $this->assertTrue($user->digest_enabled);
     }
 
     public function test_invalid_hour_is_rejected(): void

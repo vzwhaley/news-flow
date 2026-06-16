@@ -31,6 +31,7 @@ const hours = Array.from({ length: 24 }, (_, h) => ({
 const form = useForm({
     refresh_hour: user.value.refresh_hour ?? 6,
     timezone: user.value.timezone ?? 'UTC',
+    digest_enabled: user.value.digest_enabled ?? false,
 });
 
 function submit() {
@@ -72,6 +73,19 @@ function submit() {
                 </select>
                 <InputError class="mt-2" :message="form.errors.timezone" />
             </div>
+
+            <label class="flex items-start gap-3">
+                <input
+                    type="checkbox"
+                    v-model="form.digest_enabled"
+                    class="mt-1 rounded border-gray-300 text-brand-600 shadow-sm focus:ring-brand-500"
+                />
+                <span class="text-sm text-gray-700">
+                    <span class="font-medium text-gray-900">Email me a daily digest</span><br />
+                    Get a “Your NewsFlow is ready” email with the morning’s top
+                    headlines, delivered at your chosen refresh time.
+                </span>
+            </label>
 
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">Save</PrimaryButton>

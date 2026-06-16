@@ -27,3 +27,13 @@ Schedule::command('newsflow:refresh --due')
     ->withoutOverlapping()
     ->runInBackground()
     ->description('Hourly NewsFlow refresh for users due this hour.');
+
+/*
+| Daily digest email — runs 5 minutes after the refresh so opted-in users get
+| an email containing the morning's freshly-gathered stories.
+*/
+Schedule::command('newsflow:digest --due')
+    ->hourlyAt(5)
+    ->withoutOverlapping()
+    ->runInBackground()
+    ->description('Hourly "Your NewsFlow is ready" digest for due, opted-in users.');

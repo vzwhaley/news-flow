@@ -49,8 +49,12 @@ fresh, popular stories and applies a "prepend new, drop oldest" rule.
 - **Refresher:** `App\Services\Articles\TopicRefresher` — the keep-12 /
   prepend-new / drop-oldest logic.
 - **Command:** `php artisan newsflow:refresh` (all topics) ·
-  `--topic=ID` · `--user=ID`
-- **Schedule:** daily at 06:00 (`routes/console.php`).
+  `--due` (only users due this hour, in their timezone) · `--topic=ID` ·
+  `--user=ID`
+- **Schedule:** runs hourly with `--due` so each user's feed refreshes at the
+  hour they chose, in their own timezone (`routes/console.php`).
+- **Daily digest:** opted-in users get a "Your NewsFlow is ready" email
+  (`newsflow:digest --due`, scheduled 5 min after the refresh).
 
 Configure sources in `.env` (`NEWSAPI_KEY`, `GNEWS_KEY`, `NEWSDATA_KEY`,
 `ANTHROPIC_API_KEY`). With none set, the hybrid provider serves the stub feed.

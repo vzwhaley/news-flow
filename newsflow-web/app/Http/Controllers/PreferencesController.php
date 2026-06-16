@@ -15,8 +15,9 @@ class PreferencesController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'refresh_hour' => ['required', 'integer', 'between:0,23'],
-            'timezone'     => ['required', 'string', Rule::in(timezone_identifiers_list())],
+            'refresh_hour'   => ['required', 'integer', 'between:0,23'],
+            'timezone'       => ['required', 'string', Rule::in(timezone_identifiers_list())],
+            'digest_enabled' => ['required', 'boolean'],
         ]);
 
         $request->user()->forceFill($validated)->save();
