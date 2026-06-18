@@ -19,6 +19,8 @@ class Article extends Model
         'position',
         'published_at',
         'fetched_at',
+        'read_at',
+        'tldr',
     ];
 
     protected function casts(): array
@@ -27,6 +29,7 @@ class Article extends Model
             'popularity_score' => 'float',
             'published_at'     => 'datetime',
             'fetched_at'       => 'datetime',
+            'read_at'          => 'datetime',
         ];
     }
 

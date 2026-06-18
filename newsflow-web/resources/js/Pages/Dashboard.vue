@@ -18,6 +18,9 @@ const flash = computed(() => page.props.flash ?? {});
 const selected = ref('all');
 const nameInput = ref(null);
 
+// Show only unread articles across the feed.
+const unreadOnly = ref(false);
+
 const atLimit = computed(() =>
     user.value.topic_limit !== null && user.value.topic_count >= user.value.topic_limit
 );
@@ -290,6 +293,18 @@ function quickAdd(name) {
                         </p>
                     </div>
 
+                    <!-- Reading toolbar -->
+                    <div v-if="topics.length" class="mb-6 flex items-center justify-end">
+                        <button
+                            @click="unreadOnly = !unreadOnly"
+                            class="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition"
+                            :class="unreadOnly ? 'border-brand-600 bg-brand-50 text-brand-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'"
+                        >
+                            <span class="inline-block h-2 w-2 rounded-full" :class="unreadOnly ? 'bg-brand-600' : 'bg-gray-300'"></span>
+                            Unread only
+                        </button>
+                    </div>
+
                     <!-- Topic feeds -->
                     <TopicSection
                         v-for="entry in renderList"
@@ -298,6 +313,7 @@ function quickAdd(name) {
                         :group-name="entry.groupName"
                         :is-pro="user.is_pro"
                         :saved-fingerprints="savedFingerprints"
+                        :unread-only="unreadOnly"
                         :can-move-up="entry.canUp"
                         :can-move-down="entry.canDown"
                         @move="move"

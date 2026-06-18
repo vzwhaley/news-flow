@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PreferencesController;
@@ -55,7 +56,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/topics/reorder', [TopicController::class, 'reorder'])->name('topics.reorder');
     Route::post('/topics/{topic}/refresh', [TopicController::class, 'refresh'])->name('topics.refresh');
     Route::patch('/topics/{topic}/mutes', [TopicController::class, 'mutes'])->name('topics.mutes');
+    Route::post('/topics/{topic}/read-all', [TopicController::class, 'markAllRead'])->name('topics.read-all');
     Route::delete('/topics/{topic}', [TopicController::class, 'destroy'])->name('topics.destroy');
+
+    // Per-article actions (XHR/JSON)
+    Route::post('/articles/{article}/summary', [ArticleController::class, 'summary'])->name('articles.summary');
+    Route::post('/articles/{article}/read', [ArticleController::class, 'markRead'])->name('articles.read');
+    Route::delete('/articles/{article}/read', [ArticleController::class, 'markUnread'])->name('articles.unread');
 
     // Saved ("read later") articles — Pro
     Route::get('/saved', [SavedArticleController::class, 'index'])->name('saved.index');

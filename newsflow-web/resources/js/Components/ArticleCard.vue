@@ -6,11 +6,21 @@ const props = defineProps({
     article: { type: Object, required: true },
     rank: { type: Number, default: null },
     topicName: { type: String, default: null },
+    isPro: { type: Boolean, default: false },
     canSave: { type: Boolean, default: false }, // Pro
     isSaved: { type: Boolean, default: false },
+    isRead: { type: Boolean, default: false },
 });
 
+const emit = defineEmits(['mark-read', 'toggle-read']);
+
 const saving = ref(false);
+
+// TL;DR (Pro) — self-contained state.
+const tldr = ref(props.article.tldr || null);
+const tldrOpen = ref(false);
+const summarizing = ref(false);
+const tldrError = ref(null);
 
 const host = computed(() => {
     try {
@@ -26,8 +36,7 @@ const when = computed(() => {
     const diffH = Math.round((Date.now() - d.getTime()) / 36e5);
     if (diffH < 1) return 'Just now';
     if (diffH < 24) return `${diffH}h ago`;
-    const diffD = Math.round(diffH / 24);
-    return `${diffD}d ago`;
+    return `${Math.round(diffH / 24)}d ago`;
 });
 
 function save() {
@@ -45,11 +54,35 @@ function save() {
         onFinish: () => (saving.value = false),
     });
 }
+
+function openArticle() {
+    emit('mark-read', props.article.id); // marks read; the anchor still opens
+}
+
+async function toggleTldr() {
+    if (tldr.value) {
+        tldrOpen.value = !tldrOpen.value;
+        return;
+    }
+    summarizing.value = true;
+    tldrError.value = null;
+    try {
+        const { data } = await window.axios.post(route('articles.summary', props.article.id));
+        tldr.value = data.tldr;
+        tldrOpen.value = true;
+    } catch (e) {
+        tldrError.value = e?.response?.data?.error || 'Couldn’t summarize right now.';
+        tldrOpen.value = true;
+    } finally {
+        summarizing.value = false;
+    }
+}
 </script>
 
 <template>
     <article
-        class="group flex h-full flex-col rounded-xl border border-gray-200 bg-white p-4 transition hover:border-brand-300 hover:shadow-md"
+        class="group flex h-full flex-col rounded-xl border bg-white p-4 transition hover:border-brand-300 hover:shadow-md"
+        :class="isRead ? 'border-gray-100' : 'border-gray-200'"
     >
         <div class="mb-2 flex items-center gap-2 text-xs text-gray-400">
             <span
@@ -61,8 +94,20 @@ function save() {
             <span class="font-medium text-gray-500">{{ article.source || host }}</span>
             <span v-if="when">· {{ when }}</span>
 
-            <!-- Save / bookmark -->
-            <span class="ml-auto">
+            <span class="ml-auto flex items-center gap-1">
+                <!-- Read / unread toggle -->
+                <button
+                    @click="emit('toggle-read', article.id)"
+                    :title="isRead ? 'Mark as unread' : 'Mark as read'"
+                    class="rounded p-1 hover:bg-gray-100"
+                    :class="isRead ? 'text-green-600' : 'text-gray-300 hover:text-gray-500'"
+                >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+
+                <!-- Save / bookmark -->
                 <button
                     v-if="canSave"
                     @click="save"
@@ -88,7 +133,7 @@ function save() {
             </span>
         </div>
 
-        <h4 class="font-serif text-lg font-semibold leading-snug text-ink">
+        <h4 class="font-serif text-lg font-semibold leading-snug" :class="isRead ? 'text-gray-400' : 'text-ink'">
             {{ article.headline }}
         </h4>
 
@@ -96,16 +141,49 @@ function save() {
             {{ article.description }}
         </p>
 
-        <a
-            :href="article.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700"
-        >
-            Read more
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-        </a>
+        <!-- TL;DR panel -->
+        <div v-if="tldrOpen" class="mt-3 rounded-lg bg-brand-50/70 p-3 text-sm">
+            <p v-if="tldrError" class="text-gray-600">{{ tldrError }}</p>
+            <template v-else>
+                <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-700">TL;DR</p>
+                <p class="text-gray-700">{{ tldr }}</p>
+            </template>
+        </div>
+
+        <div class="mt-3 flex items-center justify-between">
+            <a
+                :href="article.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                @click="openArticle"
+                class="inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700"
+            >
+                Read more
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </a>
+
+            <!-- TL;DR action -->
+            <button
+                v-if="isPro"
+                @click="toggleTldr"
+                :disabled="summarizing"
+                class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold text-gray-500 hover:bg-gray-100 hover:text-brand-700 disabled:opacity-60"
+            >
+                <svg v-if="summarizing" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                <svg v-else class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                {{ summarizing ? 'Summarizing…' : (tldr ? 'TL;DR' : 'TL;DR this') }}
+            </button>
+            <Link
+                v-else
+                :href="route('billing')"
+                title="TL;DR summaries are a Pro feature"
+                class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold text-gray-400 hover:bg-gray-100"
+            >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                TL;DR
+            </Link>
+        </div>
     </article>
 </template>

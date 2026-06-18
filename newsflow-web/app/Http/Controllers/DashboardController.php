@@ -54,6 +54,8 @@ class DashboardController extends Controller
                 'image_url'    => $a->image_url,
                 'fingerprint'  => $a->fingerprint,
                 'published_at' => $a->published_at?->toIso8601String(),
+                'is_read'      => ! is_null($a->read_at),
+                'tldr'         => $a->tldr,
             ])->all(),
         ];
 

@@ -157,6 +157,18 @@ class TopicController extends Controller
     }
 
     /**
+     * Mark every article in a topic as read.
+     */
+    public function markAllRead(Request $request, Topic $topic): RedirectResponse
+    {
+        $this->authorizeTopic($request, $topic);
+
+        $topic->articles()->whereNull('read_at')->update(['read_at' => now()]);
+
+        return back();
+    }
+
+    /**
      * Reorder the user's topics. Expects an ordered array of topic ids.
      */
     public function reorder(Request $request): RedirectResponse

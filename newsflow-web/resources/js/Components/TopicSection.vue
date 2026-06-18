@@ -1,13 +1,14 @@
 <script setup>
 import ArticleCard from '@/Components/ArticleCard.vue';
-import { Link, router } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { router } from '@inertiajs/vue3';
+import { computed, reactive, ref, watch } from 'vue';
 
 const props = defineProps({
     topic: { type: Object, required: true },
     groupName: { type: String, default: null },
     isPro: { type: Boolean, default: false },
     savedFingerprints: { type: Array, default: () => [] },
+    unreadOnly: { type: Boolean, default: false },
     canMoveUp: { type: Boolean, default: false },
     canMoveDown: { type: Boolean, default: false },
 });
@@ -21,6 +22,43 @@ const newWord = ref('');
 const keywords = ref([...(props.topic.mute_keywords ?? [])]);
 
 const savedSet = computed(() => new Set(props.savedFingerprints));
+
+// Local read-state overrides (optimistic); fall back to the server value.
+const overrides = reactive({});
+watch(() => props.topic.articles, () => {
+    for (const k in overrides) delete overrides[k];
+});
+
+function isRead(a) {
+    return a.id in overrides ? overrides[a.id] : !!a.is_read;
+}
+
+const unreadCount = computed(() => props.topic.articles.filter((a) => !isRead(a)).length);
+
+const displayedArticles = computed(() =>
+    props.unreadOnly ? props.topic.articles.filter((a) => !isRead(a)) : props.topic.articles
+);
+
+function markRead(id) {
+    if (overrides[id] === true) return;
+    overrides[id] = true;
+    window.axios.post(route('articles.read', id)).catch(() => { overrides[id] = false; });
+}
+
+function toggleRead(id) {
+    const a = props.topic.articles.find((x) => x.id === id);
+    const next = !isRead(a);
+    overrides[id] = next;
+    const req = next
+        ? window.axios.post(route('articles.read', id))
+        : window.axios.delete(route('articles.unread', id));
+    req.catch(() => { overrides[id] = !next; });
+}
+
+function markAllRead() {
+    props.topic.articles.forEach((a) => { overrides[a.id] = true; });
+    router.post(route('topics.read-all', props.topic.id), {}, { preserveScroll: true, preserveState: true });
+}
 
 const lastRefreshed = computed(() => {
     if (!props.topic.last_refreshed_at) return 'Not yet refreshed';
@@ -73,6 +111,7 @@ function saveMutes() {
                 </p>
                 <h2 class="font-serif text-2xl font-bold tracking-tight text-ink">
                     {{ topic.name }}
+                    <span v-if="unreadCount" class="align-middle text-sm font-semibold text-brand-600">· {{ unreadCount }} unread</span>
                 </h2>
                 <p class="text-xs text-gray-400">{{ lastRefreshed }}</p>
             </div>
@@ -85,6 +124,13 @@ function saveMutes() {
                 <button v-if="canMoveDown" @click="emit('move', { id: topic.id, dir: 1 })" title="Move down"
                     class="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-ink">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+
+                <!-- Mark all read -->
+                <button v-if="unreadCount" @click="markAllRead" title="Mark all read"
+                    class="inline-flex items-center gap-1 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Mark read
                 </button>
 
                 <!-- Mute keywords (Pro) -->
@@ -126,17 +172,24 @@ function saveMutes() {
         </div>
 
         <!-- Articles grid -->
-        <div v-if="topic.articles.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div v-if="displayedArticles.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <ArticleCard
-                v-for="(a, i) in topic.articles"
+                v-for="(a, i) in displayedArticles"
                 :key="a.id"
                 :article="a"
                 :rank="i + 1"
                 :topic-name="topic.name"
+                :is-pro="isPro"
                 :can-save="isPro"
                 :is-saved="savedSet.has(a.fingerprint)"
+                :is-read="isRead(a)"
+                @mark-read="markRead"
+                @toggle-read="toggleRead"
             />
         </div>
+        <p v-else-if="unreadOnly && topic.articles.length" class="rounded-lg bg-gray-50 p-6 text-center text-sm text-gray-500">
+            You’re all caught up on “{{ topic.name }}”. 🎉
+        </p>
         <p v-else class="rounded-lg bg-gray-50 p-6 text-center text-sm text-gray-500">
             No articles yet — hit Refresh to pull the latest stories.
         </p>

@@ -16,6 +16,7 @@ const proFeatures = [
     'Daily refresh at your chosen time',
     '12 popularity-ranked articles per topic',
     'Save articles to read later',
+    'AI “TL;DR this” article summaries',
     'Mute keywords per topic',
     'Daily email digest',
     'Reorder your personal newspaper',
