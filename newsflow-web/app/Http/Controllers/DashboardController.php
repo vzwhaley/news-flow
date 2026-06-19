@@ -19,21 +19,75 @@ class DashboardController extends Controller
 
         $savedFingerprints = $user->savedArticles()->pluck('fingerprint')->all();
 
-        $topics = $user->topLevelTopics()
+        $topicModels = $user->topLevelTopics()
             ->with([
                 'articles' => fn ($q) => $q->orderBy('position'),
                 'children' => fn ($q) => $q->orderBy('position'),
                 'children.articles' => fn ($q) => $q->orderBy('position'),
             ])
             ->orderBy('position')
-            ->get()
-            ->map(fn ($topic) => $this->transform($topic, true))
-            ->all();
+            ->get();
+
+        $topics = $topicModels->map(fn ($topic) => $this->transform($topic, true))->all();
 
         return Inertia::render('Dashboard', [
             'topics'            => $topics,
             'savedFingerprints' => $savedFingerprints,
+            'watchlist'         => $this->watchlist($user, $topicModels),
+            'watchKeywords'     => $user->isPro() ? ($user->watch_keywords ?? []) : [],
         ]);
+    }
+
+    /**
+     * Articles across all feeds that match the user's watch keywords (Pro).
+     */
+    private function watchlist($user, $topicModels): array
+    {
+        if (! $user->isPro() || empty($user->watch_keywords)) {
+            return [];
+        }
+
+        $hits = [];
+
+        $scan = function (Topic $topic) use ($user, &$hits) {
+            foreach ($topic->articles as $a) {
+                $matches = $user->watchMatches($a->headline, $a->description);
+                if (! empty($matches)) {
+                    $hits[] = $this->articleArray($a) + [
+                        'topic_name' => $topic->name,
+                        'matches'    => $matches,
+                    ];
+                }
+            }
+        };
+
+        foreach ($topicModels as $topic) {
+            $scan($topic);
+            foreach ($topic->children as $child) {
+                $scan($child);
+            }
+        }
+
+        // De-dupe the same story matched under multiple topics; cap the list.
+        $unique = collect($hits)->unique('fingerprint')->values()->take(24)->all();
+
+        return $unique;
+    }
+
+    private function articleArray(\App\Models\Article $a): array
+    {
+        return [
+            'id'           => $a->id,
+            'headline'     => $a->headline,
+            'description'  => $a->description,
+            'url'          => $a->url,
+            'source'       => $a->source,
+            'image_url'    => $a->image_url,
+            'fingerprint'  => $a->fingerprint,
+            'published_at' => $a->published_at?->toIso8601String(),
+            'is_read'      => ! is_null($a->read_at),
+            'tldr'         => $a->tldr,
+        ];
     }
 
     private function transform(Topic $topic, bool $withChildren = false): array
@@ -45,18 +99,7 @@ class DashboardController extends Controller
             'position'          => $topic->position,
             'mute_keywords'     => $topic->mute_keywords ?? [],
             'last_refreshed_at' => $topic->last_refreshed_at?->toIso8601String(),
-            'articles'          => $topic->articles->map(fn ($a) => [
-                'id'           => $a->id,
-                'headline'     => $a->headline,
-                'description'  => $a->description,
-                'url'          => $a->url,
-                'source'       => $a->source,
-                'image_url'    => $a->image_url,
-                'fingerprint'  => $a->fingerprint,
-                'published_at' => $a->published_at?->toIso8601String(),
-                'is_read'      => ! is_null($a->read_at),
-                'tldr'         => $a->tldr,
-            ])->all(),
+            'articles'          => $topic->articles->map(fn ($a) => $this->articleArray($a))->all(),
         ];
 
         if ($withChildren) {

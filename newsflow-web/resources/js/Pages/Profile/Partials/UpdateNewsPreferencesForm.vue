@@ -2,7 +2,8 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { useForm, usePage } from '@inertiajs/vue3';
+import TagInput from '@/Components/TagInput.vue';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -31,12 +32,16 @@ const hours = Array.from({ length: 24 }, (_, h) => ({
     label: new Date(2000, 0, 1, h).toLocaleTimeString(undefined, { hour: 'numeric' }),
 }));
 
+const isPro = computed(() => user.value.is_pro);
+
 const form = useForm({
     refresh_hour: user.value.refresh_hour ?? 6,
     timezone: user.value.timezone ?? 'UTC',
     digest_enabled: user.value.digest_enabled ?? false,
     digest_new_only: user.value.digest_new_only ?? false,
     digest_topic_ids: props.topics.filter((t) => t.include_in_digest).map((t) => t.id),
+    blocked_sources: [...(user.value.blocked_sources ?? [])],
+    watch_keywords: [...(user.value.watch_keywords ?? [])],
 });
 
 function topicLabel(t) {
@@ -106,6 +111,30 @@ function submit() {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Pro: blocked sources + watchlist -->
+            <div v-if="isPro" class="space-y-5 rounded-lg border border-gray-200 p-4">
+                <div class="flex items-center gap-2">
+                    <h3 class="text-sm font-semibold text-gray-900">Sources &amp; watchlist</h3>
+                    <span class="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700">Pro</span>
+                </div>
+
+                <div>
+                    <InputLabel value="Blocked publishers" />
+                    <p class="mb-2 text-xs text-gray-500">Hide articles from these publishers everywhere. Match by name or domain (e.g. “tabloid.com”).</p>
+                    <TagInput v-model="form.blocked_sources" placeholder="e.g. Daily Tabloid" />
+                </div>
+
+                <div>
+                    <InputLabel value="Watch keywords" />
+                    <p class="mb-2 text-xs text-gray-500">Stories across any topic that mention these words get pinned to a “Watchlist” at the top of your feed.</p>
+                    <TagInput v-model="form.watch_keywords" placeholder="e.g. recall, merger" />
+                </div>
+            </div>
+            <div v-else class="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-brand-50 px-4 py-3">
+                <p class="text-sm text-brand-800">Block publishers and set keyword watchlists with <strong>Pro</strong>.</p>
+                <Link :href="route('billing')" class="rounded-md bg-brand-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-700">Upgrade</Link>
             </div>
 
             <div class="flex items-center gap-4">

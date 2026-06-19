@@ -17,8 +17,10 @@ const proFeatures = [
     '12 popularity-ranked articles per topic',
     'Save articles to read later',
     'AI “TL;DR this” article summaries',
-    'Mute keywords per topic',
-    'Daily email digest',
+    'Keyword watchlist across all feeds',
+    'Search your feeds & saved articles',
+    'Mute keywords & block publishers',
+    'Daily email digest (per-topic, new-only)',
     'Reorder your personal newspaper',
     'Web, Android & iOS (same account)',
 ];

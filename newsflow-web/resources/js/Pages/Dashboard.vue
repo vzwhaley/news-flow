@@ -8,7 +8,13 @@ import { computed, nextTick, ref } from 'vue';
 const props = defineProps({
     topics: { type: Array, default: () => [] },
     savedFingerprints: { type: Array, default: () => [] },
+    watchlist: { type: Array, default: () => [] },
+    watchKeywords: { type: Array, default: () => [] },
 });
+
+function openWatch(id) {
+    window.axios.post(route('articles.read', id)).catch(() => {});
+}
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
@@ -291,6 +297,32 @@ function quickAdd(name) {
                             Add your first topic above and we’ll pull the day’s most popular stories on it right away.
                             Tip: add a broad topic like “Information Technology”, then nest subtopics like “OpenAI” under it.
                         </p>
+                    </div>
+
+                    <!-- Watchlist (Pro) — stories matching the user's keywords -->
+                    <div v-if="watchlist.length && selected === 'all'" class="mb-8 rounded-2xl border border-amber-200 bg-amber-50/60 p-5">
+                        <div class="mb-3 flex items-center gap-2">
+                            <svg class="h-5 w-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" /></svg>
+                            <h2 class="font-serif text-lg font-bold text-ink">On your watchlist</h2>
+                            <span class="text-xs text-gray-500">matching: {{ watchKeywords.join(', ') }}</span>
+                        </div>
+                        <ul class="divide-y divide-amber-100">
+                            <li v-for="a in watchlist" :key="a.id" class="flex items-start justify-between gap-4 py-2.5">
+                                <div class="min-w-0">
+                                    <a :href="a.url" target="_blank" rel="noopener noreferrer" @click="openWatch(a.id)"
+                                        class="font-serif text-base font-semibold leading-snug text-ink hover:text-brand-700">
+                                        {{ a.headline }}
+                                    </a>
+                                    <div class="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-gray-500">
+                                        <span class="rounded-full bg-white px-2 py-0.5 font-medium text-gray-600 ring-1 ring-gray-200">{{ a.topic_name }}</span>
+                                        <span v-if="a.source">· {{ a.source }}</span>
+                                        <span v-for="kw in a.matches" :key="kw" class="rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-700">{{ kw }}</span>
+                                    </div>
+                                </div>
+                                <a :href="a.url" target="_blank" rel="noopener noreferrer" @click="openWatch(a.id)"
+                                    class="shrink-0 text-sm font-semibold text-brand-600 hover:text-brand-700">Read →</a>
+                            </li>
+                        </ul>
                     </div>
 
                     <!-- Reading toolbar -->

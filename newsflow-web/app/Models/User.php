@@ -24,6 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'timezone',
         'digest_enabled',
         'digest_new_only',
+        'blocked_sources',
+        'watch_keywords',
         'google_id',
         'apple_id',
         'discord_id',
@@ -44,6 +46,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'digest_enabled'        => 'boolean',
             'digest_new_only'       => 'boolean',
             'digest_sent_at'        => 'datetime',
+            'blocked_sources'       => 'array',
+            'watch_keywords'        => 'array',
         ];
     }
 
@@ -175,5 +179,73 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return max(0, $limit - $this->topics()->count());
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pro power features — blocked sources & keyword watchlist
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Is this article's publisher on the user's blocklist? Matches a blocklist
+     * entry against both the source name and the URL host (case-insensitive
+     * substring). Pro only — no-op for free accounts.
+     */
+    public function isSourceBlocked(?string $source, ?string $url = null): bool
+    {
+        if (! $this->isPro()) {
+            return false;
+        }
+
+        $blocked = $this->blocked_sources ?: [];
+        if (empty($blocked)) {
+            return false;
+        }
+
+        $host = '';
+        if ($url) {
+            $host = strtolower(preg_replace('/^www\./', '', parse_url($url, PHP_URL_HOST) ?? ''));
+        }
+        $haystack = strtolower(trim(($source ?? '').' '.$host));
+
+        foreach ($blocked as $entry) {
+            $entry = strtolower(trim($entry));
+            if ($entry !== '' && str_contains($haystack, $entry)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Which of the user's watch keywords this text matches (Pro). Returns the
+     * list of matched keywords (empty if none / free).
+     *
+     * @return array<int, string>
+     */
+    public function watchMatches(string $headline, ?string $description = null): array
+    {
+        if (! $this->isPro()) {
+            return [];
+        }
+
+        $keywords = $this->watch_keywords ?: [];
+        if (empty($keywords)) {
+            return [];
+        }
+
+        $haystack = mb_strtolower($headline.' '.($description ?? ''));
+        $hits = [];
+
+        foreach ($keywords as $word) {
+            $word = trim($word);
+            if ($word !== '' && str_contains($haystack, mb_strtolower($word))) {
+                $hits[] = $word;
+            }
+        }
+
+        return $hits;
     }
 }

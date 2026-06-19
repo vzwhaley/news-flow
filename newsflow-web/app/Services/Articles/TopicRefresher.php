@@ -47,10 +47,12 @@ class TopicRefresher
             $existingFingerprints,
         );
 
-        // Drop anything the user muted for this topic before considering it.
-        $candidates = array_values(array_filter(
-            $candidates,
-            fn ($c) => ! $topic->isMuted($c->headline, $c->description),
+        // Drop muted topics and articles from blocked publishers (Pro) before
+        // considering anything.
+        $user = $topic->user;
+        $candidates = array_values(array_filter($candidates, fn ($c) =>
+            ! $topic->isMuted($c->headline, $c->description)
+            && ! ($user && $user->isSourceBlocked($c->source, $c->url))
         ));
 
         // Keep only candidates we don't already store, de-duped among

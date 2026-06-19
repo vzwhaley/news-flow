@@ -17,19 +17,28 @@ class PreferencesController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'refresh_hour'      => ['required', 'integer', 'between:0,23'],
-            'timezone'          => ['required', 'string', Rule::in(timezone_identifiers_list())],
-            'digest_enabled'    => ['required', 'boolean'],
-            'digest_new_only'   => ['required', 'boolean'],
-            'digest_topic_ids'  => ['array'],
+            'refresh_hour'       => ['required', 'integer', 'between:0,23'],
+            'timezone'           => ['required', 'string', Rule::in(timezone_identifiers_list())],
+            'digest_enabled'     => ['required', 'boolean'],
+            'digest_new_only'    => ['required', 'boolean'],
+            'digest_topic_ids'   => ['array'],
             'digest_topic_ids.*' => ['integer'],
+            'blocked_sources'    => ['array', 'max:100'],
+            'blocked_sources.*'  => ['string', 'max:100'],
+            'watch_keywords'     => ['array', 'max:100'],
+            'watch_keywords.*'   => ['string', 'max:60'],
         ]);
+
+        $clean = fn ($list) => collect($list ?? [])
+            ->map(fn ($s) => trim($s))->filter()->unique()->values()->all();
 
         $user->forceFill([
             'refresh_hour'    => $validated['refresh_hour'],
             'timezone'        => $validated['timezone'],
             'digest_enabled'  => $validated['digest_enabled'],
             'digest_new_only' => $validated['digest_new_only'],
+            'blocked_sources' => $clean($validated['blocked_sources'] ?? []),
+            'watch_keywords'  => $clean($validated['watch_keywords'] ?? []),
         ])->save();
 
         // Per-topic digest inclusion: the submitted ids are the included ones.

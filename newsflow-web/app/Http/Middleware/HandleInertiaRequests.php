@@ -50,6 +50,8 @@ class HandleInertiaRequests extends Middleware
                     'timezone'            => $user->timezone,
                     'digest_enabled'      => (bool) $user->digest_enabled,
                     'digest_new_only'     => (bool) $user->digest_new_only,
+                    'blocked_sources'     => $user->blocked_sources ?? [],
+                    'watch_keywords'      => $user->watch_keywords ?? [],
                 ] : null,
             ],
 

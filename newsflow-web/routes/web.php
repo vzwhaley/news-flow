@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PreferencesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SavedArticleController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -63,6 +64,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/articles/{article}/summary', [ArticleController::class, 'summary'])->name('articles.summary');
     Route::post('/articles/{article}/read', [ArticleController::class, 'markRead'])->name('articles.read');
     Route::delete('/articles/{article}/read', [ArticleController::class, 'markUnread'])->name('articles.unread');
+
+    // Search across feeds + saved (Pro)
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
 
     // Saved ("read later") articles — Pro
     Route::get('/saved', [SavedArticleController::class, 'index'])->name('saved.index');

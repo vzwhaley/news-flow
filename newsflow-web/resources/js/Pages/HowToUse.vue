@@ -41,9 +41,12 @@ const sections = [
         title: 'Pro power features',
         pro: true,
         points: [
-            'Save / read later: tap the bookmark icon on any article to keep it on your Saved page — it stays even after the feed rotates.',
-            'Mute keywords: hide stories that mention words you don’t care about (e.g. follow “NFL” but mute “injury”).',
-            'Unlimited topics, a daily email digest, and refresh at the exact time you want.',
+            'TL;DR this: tap “TL;DR this” on any article for an instant AI summary, without leaving NewsFlow.',
+            'Watchlist: add keywords (e.g. “merger”, “recall”) and matching stories from any topic get pinned to the top of your feed.',
+            'Search: search across every topic you follow and everything you’ve saved.',
+            'Save / read later: bookmark any article to your Saved page — it stays even after the feed rotates.',
+            'Mute keywords & block publishers: hide stories with words you don’t care about, or from sources you don’t trust.',
+            'Unlimited topics & subtopics, a customizable daily email digest, and refresh at the exact time you want.',
         ],
     },
     {
