@@ -4,6 +4,7 @@ namespace App\Services\Articles;
 
 use App\Contracts\ArticleProvider;
 use App\Models\Article;
+use App\Models\ArticleArchive;
 use App\Models\Topic;
 use App\Support\FetchedArticle;
 use Illuminate\Support\Carbon;
@@ -80,13 +81,17 @@ class TopicRefresher
 
                 if ($added > 0) {
                     // Drop the oldest $added articles (highest position values).
-                    $dropIds = $topic->articles()
+                    $toDrop = $topic->articles()
                         ->orderByDesc('position')
                         ->limit($added)
-                        ->pluck('id');
+                        ->get();
 
-                    Article::whereIn('id', $dropIds)->delete();
-                    $dropped = $dropIds->count();
+                    // Snapshot them to the user's archive (Pro history) before
+                    // they're removed from the live feed.
+                    $this->archive($topic, $toDrop, $now);
+
+                    Article::whereIn('id', $toDrop->pluck('id'))->delete();
+                    $dropped = $toDrop->count();
 
                     $this->insertAtTop($topic, $toAdd, $now);
                 }
@@ -133,6 +138,37 @@ class TopicRefresher
         }
 
         return $new;
+    }
+
+    /**
+     * Snapshot rotated-out articles into the owner's archive (Pro history).
+     * Best-effort and idempotent (unique on user + fingerprint).
+     *
+     * @param  \Illuminate\Support\Collection<int, Article>  $articles
+     */
+    private function archive(Topic $topic, $articles, Carbon $now): void
+    {
+        $user = $topic->user;
+
+        if (! $user || ! $user->isPro() || $articles->isEmpty()) {
+            return;
+        }
+
+        foreach ($articles as $a) {
+            ArticleArchive::firstOrCreate(
+                ['user_id' => $user->id, 'fingerprint' => $a->fingerprint],
+                [
+                    'topic_name'   => $topic->name,
+                    'headline'     => $a->headline,
+                    'description'  => $a->description,
+                    'url'          => $a->url,
+                    'source'       => $a->source,
+                    'image_url'    => $a->image_url,
+                    'published_at' => $a->published_at,
+                    'archived_at'  => $now,
+                ],
+            );
+        }
     }
 
     /**

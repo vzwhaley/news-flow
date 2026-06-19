@@ -51,6 +51,19 @@ class DatabaseSeeder extends Seeder
             $this->seedTopic($pro, $child, $refresher, parent: $it, position: $i);
         }
 
+        // A little archive history for the Pro demo user.
+        foreach (range(1, 9) as $i) {
+            $pro->archivedArticles()->create([
+                'topic_name'  => ['World News', 'Indiana Jones', 'Information Technology'][$i % 3],
+                'headline'    => "An earlier story #{$i} that rotated out of the feed",
+                'description' => 'This article was on your feed previously and has since been replaced by newer coverage. Your archive keeps it so you never miss a day.',
+                'url'         => "https://www.thearchive.example/story-{$i}",
+                'source'      => ['Global Wire', 'The Beacon', 'Signal News'][$i % 3],
+                'fingerprint' => "archive-demo-{$i}",
+                'archived_at' => Carbon::now()->subDays($i),
+            ]);
+        }
+
         $this->command->info('Seeded demo users: free@newsflow.test / pro@newsflow.test (password: "password").');
     }
 

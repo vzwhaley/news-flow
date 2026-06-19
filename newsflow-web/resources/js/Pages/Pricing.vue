@@ -19,6 +19,7 @@ const proFeatures = [
     'AI “TL;DR this” article summaries',
     'Keyword watchlist across all feeds',
     'Search your feeds & saved articles',
+    'Article archive — never miss a day',
     'Mute keywords & block publishers',
     'Daily email digest (per-topic, new-only)',
     'Reorder your personal newspaper',

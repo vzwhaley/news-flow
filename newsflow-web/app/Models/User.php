@@ -75,6 +75,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(SavedArticle::class)->latest();
     }
 
+    public function archivedArticles(): HasMany
+    {
+        return $this->hasMany(ArticleArchive::class)->latest('archived_at');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Subscription / tier helpers — single source of truth for "what am I?"

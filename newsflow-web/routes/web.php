@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\DashboardController;
@@ -67,6 +68,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Search across feeds + saved (Pro)
     Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+    // Archive of rotated-out articles (Pro)
+    Route::get('/archive', [ArchiveController::class, 'index'])->name('archive');
 
     // Saved ("read later") articles — Pro
     Route::get('/saved', [SavedArticleController::class, 'index'])->name('saved.index');

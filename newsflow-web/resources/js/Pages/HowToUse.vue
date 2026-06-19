@@ -44,6 +44,7 @@ const sections = [
             'TL;DR this: tap “TL;DR this” on any article for an instant AI summary, without leaving NewsFlow.',
             'Watchlist: add keywords (e.g. “merger”, “recall”) and matching stories from any topic get pinned to the top of your feed.',
             'Search: search across every topic you follow and everything you’ve saved.',
+            'Archive: stories that rotate out of your feeds are kept in your archive so you never miss a day.',
             'Save / read later: bookmark any article to your Saved page — it stays even after the feed rotates.',
             'Mute keywords & block publishers: hide stories with words you don’t care about, or from sources you don’t trust.',
             'Unlimited topics & subtopics, a customizable daily email digest, and refresh at the exact time you want.',

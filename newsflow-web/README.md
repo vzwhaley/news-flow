@@ -31,6 +31,23 @@ Tier logic lives in `app/Models/User.php` (`plan()`, `isPro()`,
 `topicLimit()`, `canAddTopic()`). Limits are config-driven in
 `config/billing.php`.
 
+### Free vs Pro (v1)
+
+**Free:** up to 2 topics · 12 popularity-ranked articles each · daily refresh
+at a chosen hour/timezone · read/unread tracking · collapsible categories.
+
+**Pro (Monthly / Yearly / Lifetime):**
+
+- Unlimited topics **+ nested categories/subtopics**
+- AI **"TL;DR this"** article summaries (Claude)
+- **Keyword watchlist** — matching stories pinned atop the feed
+- **Search** across all feeds + saved articles
+- **Article archive** — rotated-out stories kept as browsable history
+- **Save / read-later** bookmarking
+- **Mute keywords** per topic + **block publishers** account-wide
+- **Daily email digest** with per-topic selection + "new headlines only"
+- Topic reordering
+
 ## The article engine
 
 Each topic always holds **12 articles**. A daily refresh scours the web for
@@ -92,8 +109,29 @@ Add `STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET`, and the three
 refund handling). Lifetime grants/revocations are handled by
 `App\Listeners\HandleLifetimeCheckout` and `HandleLifetimeRefund`.
 
+## v1 launch checklist
+
+Code-complete. Remaining steps are configuration:
+
+- [ ] **News source** — set `THENEWSAPI_KEY` (real-time, commercial) or
+      `NEWSDATA_KEY` (free tier allows commercial use, 12h delay) in `.env`.
+      Without a key the app serves the realistic stub feed.
+- [ ] **AI summaries** — set `ANTHROPIC_API_KEY` to enable "TL;DR this" + LLM
+      digest polishing (Claude Haiku).
+- [ ] **Stripe** — keys + 3 `STRIPE_PRICE_PRO_*` price IDs + webhook (see
+      below). Checkout buttons stay disabled until configured.
+- [ ] **Mail** — Gmail SMTP is wired; confirm with `php artisan newsflow:mail-test you@example.com`.
+- [ ] **Social login** (optional) — set Google/Apple/Discord client IDs to
+      show those buttons.
+- [ ] **Scheduler** — ensure `php artisan schedule:run` runs every minute
+      (cron / Windows Task Scheduler) so the daily refresh + digest fire.
+- [ ] `php artisan migrate --force && npm run build` on the server.
+
+Everything is covered by the test suite (`php artisan test`, 100+ tests).
+
 ## Future apps
 
 The backend is API-first so `newsflow-android` and `newsflow-ios` can become
 additional Sanctum-authenticated clients of the same API, mirroring the
-FileFlow multi-platform layout.
+FileFlow multi-platform layout. Deferred to v1.1 / mobile: push/breaking-news
+alerts, RSS export, audio briefings.
