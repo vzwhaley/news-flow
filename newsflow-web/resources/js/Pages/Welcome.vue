@@ -101,34 +101,37 @@ const sample = {
                     <!-- Sample paper -->
                     <div class="relative">
                         <div
-                            class="rounded-2xl border border-gray-200 bg-white p-6 shadow-xl"
+                            class="rounded-3xl border border-white/60 bg-white/95 p-5 shadow-2xl ring-1 ring-black/5 backdrop-blur"
                         >
-                            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                            <div class="mb-4 flex items-center justify-between">
                                 <h3 class="font-serif text-xl font-bold text-ink">
                                     {{ sample.topic }}
                                 </h3>
-                                <span class="text-xs font-medium uppercase tracking-wide text-gray-400">
+                                <span class="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-brand-700">
                                     Today · 12 stories
                                 </span>
                             </div>
-                            <ul class="divide-y divide-gray-100">
-                                <li
+                            <div class="space-y-3">
+                                <div
                                     v-for="(a, i) in sample.articles"
                                     :key="i"
-                                    class="py-4"
+                                    class="group/card rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-brand-50/70 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
                                 >
-                                    <p class="font-serif text-lg font-semibold leading-snug text-ink">
+                                    <p class="font-serif text-base font-semibold leading-snug text-ink">
                                         {{ a[0] }}
                                     </p>
-                                    <div class="mt-1 flex items-center justify-between">
-                                        <span class="text-xs text-gray-400">{{ a[1] }}</span>
-                                        <span class="text-xs font-semibold text-brand-600">Read more →</span>
+                                    <div class="mt-3 flex items-center justify-between">
+                                        <span class="text-xs font-medium text-gray-400">{{ a[1] }}</span>
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-brand-600 to-brand-700 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition group-hover/card:from-brand-700 group-hover/card:to-brand-800">
+                                            Read more
+                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                        </span>
                                     </div>
-                                </li>
-                            </ul>
+                                </div>
+                            </div>
                         </div>
                         <div
-                            class="absolute -right-4 -top-4 -z-10 h-full w-full rounded-2xl bg-brand-500/30"
+                            class="absolute -right-4 -top-4 -z-10 h-full w-full rounded-3xl bg-brand-500/30"
                         ></div>
                     </div>
                 </div>

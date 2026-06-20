@@ -81,9 +81,12 @@ async function toggleTldr() {
 
 <template>
     <article
-        class="group flex h-full flex-col rounded-xl border bg-white p-4 transition hover:border-brand-300 hover:shadow-md"
-        :class="isRead ? 'border-gray-100' : 'border-gray-200'"
+        class="group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-gradient-to-br from-white via-white to-brand-50/60 p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-brand-200 hover:shadow-lg"
+        :class="isRead ? 'border-gray-100 opacity-80' : 'border-gray-100'"
     >
+        <!-- Accent bar revealed on hover -->
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-400 via-brand-600 to-brand-700 opacity-0 transition duration-200 group-hover:opacity-100"></div>
+
         <div class="mb-2 flex items-center gap-2 text-xs text-gray-400">
             <span
                 v-if="rank !== null"
@@ -150,16 +153,16 @@ async function toggleTldr() {
             </template>
         </div>
 
-        <div class="mt-3 flex items-center justify-between">
+        <div class="mt-4 flex items-center justify-between gap-2">
             <a
                 :href="article.url"
                 target="_blank"
                 rel="noopener noreferrer"
                 @click="openArticle"
-                class="inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700"
+                class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition duration-200 hover:from-brand-700 hover:to-brand-800 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
             >
                 Read more
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
             </a>
@@ -169,7 +172,7 @@ async function toggleTldr() {
                 v-if="isPro"
                 @click="toggleTldr"
                 :disabled="summarizing"
-                class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold text-gray-500 hover:bg-gray-100 hover:text-brand-700 disabled:opacity-60"
+                class="inline-flex items-center gap-1 rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-500 transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 disabled:opacity-60"
             >
                 <svg v-if="summarizing" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 <svg v-else class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -179,7 +182,7 @@ async function toggleTldr() {
                 v-else
                 :href="route('billing')"
                 title="TL;DR summaries are a Pro feature"
-                class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold text-gray-400 hover:bg-gray-100"
+                class="inline-flex items-center gap-1 rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-400 transition hover:border-brand-300 hover:text-brand-600"
             >
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 TL;DR

@@ -1,5 +1,6 @@
 package com.newsflow.android.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -31,6 +33,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -70,10 +75,19 @@ fun ArticleCard(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
-        Column(Modifier.padding(14.dp)) {
+        Column(
+            Modifier
+                .background(
+                    Brush.verticalGradient(
+                        listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant),
+                    ),
+                )
+                .padding(16.dp),
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (topicLabel != null) {
                     Text("$topicLabel · ", fontSize = 12.sp, color = BrandBlue)
@@ -111,9 +125,18 @@ fun ArticleCard(
 
             Spacer(Modifier.height(6.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                TextButton(onClick = onOpen) {
-                    Text("Read more", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = BrandBlue)
-                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = BrandBlue, modifier = Modifier.size(16.dp))
+                // Read more — modern gradient pill button
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(50))
+                        .background(Brush.horizontalGradient(listOf(BrandBlue, Color(0xFF1D4ED8))))
+                        .clickable(onClick = onOpen)
+                        .padding(horizontal = 16.dp, vertical = 9.dp),
+                ) {
+                    Text("Read more", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.White)
+                    Spacer(Modifier.width(4.dp))
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
                 }
                 if (isPro && articleId != null) {
                     TextButton(onClick = { toggleTldr() }, enabled = !tldrLoading) {

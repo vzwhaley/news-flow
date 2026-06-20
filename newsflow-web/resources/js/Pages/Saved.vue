@@ -35,7 +35,7 @@ function unsave(id) {
             </div>
 
             <div v-if="articles.length" class="space-y-3">
-                <article v-for="a in articles" :key="a.id" class="flex items-start justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4">
+                <article v-for="a in articles" :key="a.id" class="group flex items-start justify-between gap-4 rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-brand-50/60 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md">
                     <div class="min-w-0">
                         <div class="mb-1 flex items-center gap-2 text-xs text-gray-400">
                             <span v-if="a.topic_name" class="rounded-full bg-gray-100 px-2 py-0.5 font-medium text-gray-500">{{ a.topic_name }}</span>
@@ -44,7 +44,7 @@ function unsave(id) {
                         <h3 class="font-serif text-lg font-semibold leading-snug text-ink">{{ a.headline }}</h3>
                         <p class="mt-1 line-clamp-2 text-sm text-gray-600">{{ a.description }}</p>
                         <a :href="a.url" target="_blank" rel="noopener noreferrer"
-                            class="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700">
+                            class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:from-brand-700 hover:to-brand-800 hover:shadow-md">
                             Read more
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                         </a>
