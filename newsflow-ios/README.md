@@ -1,0 +1,105 @@
+# NewsFlow for iOS
+
+Native SwiftUI client for NewsFlow, mirroring the Android app
+([`../newsflow-android`](../newsflow-android)) feature-for-feature against the
+same Sanctum-authenticated JSON API exposed by the web app
+([`../newsflow-web/routes/api.php`](../newsflow-web/routes/api.php)).
+
+- **UI:** SwiftUI (iOS 16+), Material-equivalent brand styling
+- **Networking:** `URLSession` + async/await, `Codable`
+- **Auth:** Sanctum bearer token stored in the iOS **Keychain**
+- **DI:** a tiny `ServiceLocator` singleton (same pattern as Android)
+- **Architecture:** MVVM — one `ObservableObject` view model per screen
+
+## Requirements
+
+- **macOS with Xcode 16 or newer.** The committed `NewsFlow.xcodeproj` uses
+  file-system-synchronized groups (an Xcode 16 feature), so every `.swift`
+  file under `NewsFlow/` is compiled automatically — no need to register files
+  in the project. On **Xcode 15**, regenerate the project with XcodeGen
+  instead (see below).
+
+> iOS apps can only be **compiled and run on macOS**. This project was authored
+> on Windows, so the Swift sources and project are complete and ready, but the
+> final build/run/archive must happen on a Mac.
+
+## Open & run
+
+```bash
+open NewsFlow.xcodeproj
+```
+
+Pick an iOS Simulator (e.g. iPhone 16) and press **⌘R**.
+
+### Pointing at the API
+
+[`NewsFlow/Config/AppConfig.swift`](NewsFlow/Config/AppConfig.swift) selects the
+base URL by build configuration:
+
+| Build   | Base URL                  | Notes                                                            |
+|---------|---------------------------|-----------------------------------------------------------------|
+| Debug   | `http://localhost:8000`   | The iOS **simulator** shares the Mac's network, so `localhost` reaches `php artisan serve` directly (unlike Android's `10.0.2.2`). |
+| Release | `https://newsflow.app`    | Production.                                                      |
+
+For a **physical device** in Debug, change `localhost` to the Mac's LAN IP
+(e.g. `http://192.168.1.20:8000`). Cleartext localhost is permitted in Debug via
+`NSAllowsLocalNetworking` in [`Info.plist`](Info.plist); production is HTTPS.
+
+To test against the local web app:
+
+```bash
+cd ../newsflow-web
+php artisan serve --host=0.0.0.0 --port=8000
+```
+
+## Regenerate the project (Xcode 15 / XcodeGen)
+
+```bash
+brew install xcodegen
+xcodegen generate      # reads project.yml, writes NewsFlow.xcodeproj
+```
+
+## Project layout
+
+```
+NewsFlow/
+  NewsFlowApp.swift          @main entry point
+  Config/AppConfig.swift     API base URL per build config
+  Theme/Theme.swift          Brand palette + Color(hex:)
+  Data/
+    Models.swift             Codable request/response types (mirror Models.kt)
+    NewsFlowAPI.swift         URLSession API client (mirror Api.kt/Retrofit)
+    AuthStore.swift          Keychain token storage (mirror Storage.kt)
+    ServiceLocator.swift     Manual DI singleton
+  Views/
+    AppRootView.swift        Auth phase gate (loading/login/signed-in)
+    LoginView.swift          Sign in
+    RegisterView.swift       Create account
+    MainView.swift           Bottom tab bar (Feed/Search/Saved/Account)
+    FeedView.swift           Topics, watchlist, add/refresh/delete, read/save
+    SearchView.swift         Pro search across feeds + saved
+    SavedView.swift          Saved-for-later list
+    AccountView.swift        Plan, refresh-time, digest prefs, sign out
+    ArticleCardView.swift    Shared article tile + gradient "Read more" + TL;DR
+    BrandHeader.swift        Wordmark / section labels
+Info.plist                   ATS local-networking exception, orientations
+project.yml                  XcodeGen spec (Xcode 15 fallback)
+```
+
+## API surface consumed
+
+All endpoints under `auth:sanctum` (plus the public register/login):
+
+`POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`,
+`GET /api/me`, `GET /api/feed`, `GET /api/search?q=`, `PUT /api/preferences`,
+`POST /api/topics`, `POST /api/topics/{id}/refresh`, `DELETE /api/topics/{id}`,
+`POST /api/articles/{id}/read`, `DELETE /api/articles/{id}/read`,
+`POST /api/articles/{id}/summary`, `GET /api/saved`, `POST /api/saved`,
+`DELETE /api/saved/{id}`.
+
+## Not yet included
+
+- App icon artwork (a blank `AppIcon` slot is present so it builds clean)
+- Push notifications / universal links
+- Unit/UI test target
+- Stripe in-app purchase (upgrade opens the website, matching Android)
