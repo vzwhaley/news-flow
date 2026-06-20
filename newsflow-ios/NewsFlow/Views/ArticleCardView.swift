@@ -99,7 +99,7 @@ struct ArticleCardView: View {
                     Button(action: { toggleTldr(articleId) }) {
                         HStack(spacing: 4) {
                             if tldrLoading {
-                                ProgressView().controlSize(.mini)
+                                ProgressView().controlSize(.small)
                             } else {
                                 Image(systemName: "bolt.fill").font(.system(size: 13))
                                 Text(tldr != nil ? "TL;DR" : "TL;DR this")

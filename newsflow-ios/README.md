@@ -97,9 +97,28 @@ All endpoints under `auth:sanctum` (plus the public register/login):
 `POST /api/articles/{id}/summary`, `GET /api/saved`, `POST /api/saved`,
 `DELETE /api/saved/{id}`.
 
+## Tests
+
+A `NewsFlowTests` unit-test target (wired into the project + scheme) covers the
+highest-risk area for code authored without a compiler in the loop — the
+`Codable` layer:
+
+- `ModelDecodingTests` — snake_case → model decoding and `decodeIfPresent`
+  defaults for `User`, `Article`, nested `Topic`/children, `FeedResponse`,
+  `SearchResponse`, `AuthResponse`.
+- `RequestEncodingTests` — request bodies serialize to the snake_case keys the
+  Laravel API expects (`device_name`, `parent_id` omitted when nil, `refresh_hour`,
+  `image_url`, `topic_name`, …).
+
+Run with **⌘U** in Xcode, or:
+
+```bash
+xcodebuild test -scheme NewsFlow -destination 'platform=iOS Simulator,name=iPhone 16'
+```
+
 ## Not yet included
 
-- App icon artwork (a blank `AppIcon` slot is present so it builds clean)
 - Push notifications / universal links
-- Unit/UI test target
+- UI (XCUITest) target — only logic unit tests so far
 - Stripe in-app purchase (upgrade opens the website, matching Android)
+- A designed app icon — current `AppIcon` is a generated brand-blue "NF" monogram

@@ -29,3 +29,16 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Info.plist
         ENABLE_PREVIEWS: YES
+  NewsFlowTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - NewsFlowTests
+    dependencies:
+      - target: NewsFlow
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.newsflow.ios.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/NewsFlow.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NewsFlow"
+        BUNDLE_LOADER: "$(TEST_HOST)"
