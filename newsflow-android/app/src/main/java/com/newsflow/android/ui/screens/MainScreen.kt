@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -31,6 +32,7 @@ private enum class MainTab(val label: String, val icon: ImageVector) {
     Feed("Feed", Icons.AutoMirrored.Filled.Article),
     Search("Search", Icons.Filled.Search),
     Saved("Saved", Icons.Filled.Bookmark),
+    Archive("Archive", Icons.Filled.Archive),
     Account("Account", Icons.Filled.Person),
 }
 
@@ -59,6 +61,7 @@ fun MainScreen(onSignOut: () -> Unit) {
                 MainTab.Feed -> FeedTab()
                 MainTab.Search -> SearchTab()
                 MainTab.Saved -> SavedTab()
+                MainTab.Archive -> ArchiveTab()
                 MainTab.Account -> AccountTab(onSignOut)
             }
         }

@@ -262,3 +262,37 @@ struct SearchResponse: Decodable {
         saved = try c.decodeIfPresent([SearchItem].self, forKey: .saved) ?? []
     }
 }
+
+struct ArchivedItem: Decodable, Identifiable {
+    let id: Int
+    let headline: String
+    let description: String
+    let url: String
+    let source: String?
+    let topicName: String?
+    let archivedAt: String?
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(Int.self, forKey: .id)
+        headline = try c.decode(String.self, forKey: .headline)
+        description = try c.decodeIfPresent(String.self, forKey: .description) ?? ""
+        url = try c.decode(String.self, forKey: .url)
+        source = try c.decodeIfPresent(String.self, forKey: .source)
+        topicName = try c.decodeIfPresent(String.self, forKey: .topicName)
+        archivedAt = try c.decodeIfPresent(String.self, forKey: .archivedAt)
+    }
+}
+
+struct ArchiveResponse: Decodable {
+    let locked: Bool
+    let q: String
+    let articles: [ArchivedItem]
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        locked = try c.decodeIfPresent(Bool.self, forKey: .locked) ?? false
+        q = try c.decodeIfPresent(String.self, forKey: .q) ?? ""
+        articles = try c.decodeIfPresent([ArchivedItem].self, forKey: .articles) ?? []
+    }
+}

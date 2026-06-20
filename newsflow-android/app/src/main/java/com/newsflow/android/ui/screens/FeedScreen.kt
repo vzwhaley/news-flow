@@ -93,17 +93,32 @@ class FeedViewModel : ViewModel() {
         }
     }
 
-    fun addTopic(name: String) {
+    fun addTopic(name: String, parentId: Long? = null) {
         if (name.isBlank()) return
         viewModelScope.launch {
             _state.value = _state.value.copy(busy = true, error = null)
-            val res = runCatching { ServiceLocator.api.addTopic(AddTopicRequest(name.trim())) }.getOrNull()
+            val res = runCatching { ServiceLocator.api.addTopic(AddTopicRequest(name.trim(), parentId)) }.getOrNull()
             _state.value = _state.value.copy(busy = false)
             when {
                 res != null && res.isSuccessful -> load()
                 res?.code() == 422 -> _state.value = _state.value.copy(error = "Free accounts can follow up to 2 topics. Upgrade to Pro for unlimited.")
                 else -> _state.value = _state.value.copy(error = "Couldn't add that topic.")
             }
+        }
+    }
+
+    /** Move a top-level topic up or down and persist the new order. */
+    fun moveTopic(topic: Topic, up: Boolean) {
+        if (topic.parentId != null) return
+        val list = _state.value.topics.toMutableList()
+        val i = list.indexOfFirst { it.id == topic.id }
+        if (i < 0) return
+        val j = if (up) i - 1 else i + 1
+        if (j < 0 || j >= list.size) return
+        val tmp = list[i]; list[i] = list[j]; list[j] = tmp
+        _state.value = _state.value.copy(topics = list)
+        viewModelScope.launch {
+            runCatching { ServiceLocator.api.reorderTopics(com.newsflow.android.data.ReorderRequest(list.map { it.id })) }
         }
     }
 
@@ -163,6 +178,7 @@ fun FeedTab() {
     val context = LocalContext.current
     var newTopic by remember { mutableStateOf("") }
     var muteTarget by remember { mutableStateOf<Topic?>(null) }
+    var subtopicParent by remember { mutableStateOf<Topic?>(null) }
 
     fun open(article: Article) {
         vm.markRead(article)
@@ -223,6 +239,9 @@ fun FeedTab() {
                     onRefresh = { vm.refreshTopic(row.topic.id) },
                     onMarkAllRead = { vm.markAllRead(row.topic) },
                     onMute = { muteTarget = row.topic },
+                    onAddSubtopic = { subtopicParent = row.topic },
+                    onMoveUp = { vm.moveTopic(row.topic, up = true) },
+                    onMoveDown = { vm.moveTopic(row.topic, up = false) },
                     onDelete = { vm.deleteTopic(row.topic.id) },
                 )
             }
@@ -257,6 +276,14 @@ fun FeedTab() {
             onSave = { keywords -> vm.setMutes(topic.id, keywords); muteTarget = null },
         )
     }
+
+    subtopicParent?.let { parent ->
+        SubtopicDialog(
+            parent = parent,
+            onDismiss = { subtopicParent = null },
+            onAdd = { name -> vm.addTopic(name, parent.id); subtopicParent = null },
+        )
+    }
     }
 }
 
@@ -273,9 +300,13 @@ private fun TopicHeader(
     onRefresh: () -> Unit,
     onMarkAllRead: () -> Unit,
     onMute: () -> Unit,
+    onAddSubtopic: () -> Unit,
+    onMoveUp: () -> Unit,
+    onMoveDown: () -> Unit,
     onDelete: () -> Unit,
 ) {
     var menuOpen by remember { mutableStateOf(false) }
+    val isTopLevel = topic.parentId == null
 
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.weight(1f)) {
@@ -296,10 +327,39 @@ private fun TopicHeader(
                 if (isPro) {
                     DropdownMenuItem(text = { Text("Mute keywords…") }, onClick = { menuOpen = false; onMute() })
                 }
+                if (isTopLevel) {
+                    DropdownMenuItem(text = { Text("Add subtopic…") }, onClick = { menuOpen = false; onAddSubtopic() })
+                    DropdownMenuItem(text = { Text("Move up") }, onClick = { menuOpen = false; onMoveUp() })
+                    DropdownMenuItem(text = { Text("Move down") }, onClick = { menuOpen = false; onMoveDown() })
+                }
                 DropdownMenuItem(text = { Text("Remove topic") }, onClick = { menuOpen = false; onDelete() })
             }
         }
     }
+}
+
+@Composable
+private fun SubtopicDialog(parent: Topic, onDismiss: () -> Unit, onAdd: (String) -> Unit) {
+    var name by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add subtopic") },
+        text = {
+            Column {
+                Text("Nested under \"${parent.name}\".", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.height(12.dp))
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Subtopic name") },
+                    singleLine = true,
+                )
+            }
+        },
+        confirmButton = { TextButton(onClick = { onAdd(name) }, enabled = name.isNotBlank()) { Text("Add") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
+    )
 }
 
 @Composable

@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Bottom tab shell — Feed / Search / Saved / Account — the iOS counterpart of
-/// the Android `MainScreen` with its `NavigationBar`.
+/// Bottom tab shell — Feed / Search / Saved / Archive / Account — the iOS
+/// counterpart of the Android `MainScreen` with its `NavigationBar`.
 struct MainView: View {
     let onSignOut: () -> Void
 
@@ -15,6 +15,9 @@ struct MainView: View {
             }
             tab(SavedView()) {
                 Label("Saved", systemImage: "bookmark.fill")
+            }
+            tab(ArchiveView()) {
+                Label("Archive", systemImage: "archivebox.fill")
             }
             tab(AccountView(onSignOut: onSignOut)) {
                 Label("Account", systemImage: "person.fill")

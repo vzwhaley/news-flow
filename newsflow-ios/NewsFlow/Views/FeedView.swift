@@ -51,14 +51,14 @@ final class FeedViewModel: ObservableObject {
         }
     }
 
-    func addTopic(_ name: String) {
+    func addTopic(_ name: String, parentId: Int? = nil) {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         Task {
             busy = true
             error = nil
             do {
-                _ = try await api.addTopic(AddTopicRequest(name: trimmed))
+                _ = try await api.addTopic(AddTopicRequest(name: trimmed, parentId: parentId))
                 busy = false
                 load()
             } catch APIError.http(422) {
@@ -69,6 +69,17 @@ final class FeedViewModel: ObservableObject {
                 self.error = "Couldn't add that topic."
             }
         }
+    }
+
+    /// Move a top-level topic up or down and persist the new order.
+    func moveTopic(_ topic: Topic, up: Bool) {
+        guard topic.parentId == nil,
+              let i = topics.firstIndex(where: { $0.id == topic.id }) else { return }
+        let j = up ? i - 1 : i + 1
+        guard j >= 0, j < topics.count else { return }
+        topics.swapAt(i, j)
+        let order = topics.map { $0.id }
+        Task { _ = try? await api.reorderTopics(order) }
     }
 
     func deleteTopic(_ id: Int) {
@@ -134,6 +145,9 @@ struct FeedView: View {
     @State private var newTopic = ""
     @State private var didLoad = false
     @State private var muteTarget: Topic?
+    @State private var subtopicParentId: Int?
+    @State private var showSubtopicAlert = false
+    @State private var subtopicName = ""
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -183,6 +197,16 @@ struct FeedView: View {
             MuteSheet(topic: topic) { keywords in
                 vm.setMutes(topic.id, keywords: keywords)
             }
+        }
+        .alert("Add subtopic", isPresented: $showSubtopicAlert) {
+            TextField("Subtopic name", text: $subtopicName)
+            Button("Add") {
+                if let pid = subtopicParentId { vm.addTopic(subtopicName, parentId: pid) }
+                subtopicName = ""
+            }
+            Button("Cancel", role: .cancel) { subtopicName = "" }
+        } message: {
+            Text("Add a topic nested under this category.")
         }
     }
 
@@ -237,6 +261,17 @@ struct FeedView: View {
                 if vm.isPro {
                     Button { muteTarget = row.topic } label: {
                         Label("Mute keywords…", systemImage: "speaker.slash")
+                    }
+                }
+                if row.topic.parentId == nil {
+                    Button { subtopicParentId = row.topic.id; showSubtopicAlert = true } label: {
+                        Label("Add subtopic…", systemImage: "plus")
+                    }
+                    Button { vm.moveTopic(row.topic, up: true) } label: {
+                        Label("Move up", systemImage: "arrow.up")
+                    }
+                    Button { vm.moveTopic(row.topic, up: false) } label: {
+                        Label("Move down", systemImage: "arrow.down")
                     }
                 }
                 Divider()

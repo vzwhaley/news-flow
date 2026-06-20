@@ -138,6 +138,24 @@ final class ModelDecodingTests: XCTestCase {
         XCTAssertEqual(feed.watchKeywords, ["tesla"])
     }
 
+    func testArchiveResponseDecodes() throws {
+        let json = """
+        {
+          "locked": false, "q": "chip",
+          "articles": [
+            { "id": 5, "headline": "Old chip news", "url": "https://x/o",
+              "source": "Wire", "topic_name": "Tech", "archived_at": "2026-06-01T06:00:00Z" }
+          ]
+        }
+        """.data(using: .utf8)!
+        let res = try makeDecoder().decode(ArchiveResponse.self, from: json)
+        XCTAssertFalse(res.locked)
+        XCTAssertEqual(res.q, "chip")
+        XCTAssertEqual(res.articles.count, 1)
+        XCTAssertEqual(res.articles.first?.topicName, "Tech")
+        XCTAssertEqual(res.articles.first?.archivedAt, "2026-06-01T06:00:00Z")
+    }
+
     func testSearchResponseDefaults() throws {
         let json = """
         { "q": "climate", "feed": [ { "id": 1, "headline": "H", "url": "https://x" } ] }

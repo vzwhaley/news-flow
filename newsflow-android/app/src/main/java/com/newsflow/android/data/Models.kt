@@ -158,6 +158,24 @@ data class SearchResponse(
 )
 
 @Serializable
+data class ArchivedItem(
+    val id: Long,
+    val headline: String,
+    val description: String = "",
+    val url: String,
+    val source: String? = null,
+    @SerialName("topic_name") val topicName: String? = null,
+    @SerialName("archived_at") val archivedAt: String? = null,
+)
+
+@Serializable
+data class ArchiveResponse(
+    val locked: Boolean = false,
+    val q: String = "",
+    val articles: List<ArchivedItem> = emptyList(),
+)
+
+@Serializable
 data class PreferencesRequest(
     @SerialName("refresh_hour") val refreshHour: Int,
     val timezone: String,

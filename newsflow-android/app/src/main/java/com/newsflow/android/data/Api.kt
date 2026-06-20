@@ -74,6 +74,9 @@ interface NewsFlowApi {
     @GET("api/search")
     suspend fun search(@Query("q") q: String): Response<SearchResponse>
 
+    @GET("api/archive")
+    suspend fun archive(@Query("q") q: String): Response<ArchiveResponse>
+
     @PUT("api/preferences")
     suspend fun updatePreferences(@Body body: PreferencesRequest): Response<MeResponse>
 }

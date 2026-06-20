@@ -74,6 +74,11 @@ final class NewsFlowAPI {
         return try await send("api/search?q=\(escaped)", method: "GET")
     }
 
+    func archive(_ q: String) async throws -> ArchiveResponse {
+        let escaped = q.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? q
+        return try await send("api/archive?q=\(escaped)", method: "GET")
+    }
+
     func updatePreferences(_ body: PreferencesRequest) async throws -> MeResponse {
         try await send("api/preferences", method: "PUT", body: body)
     }
