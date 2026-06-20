@@ -83,7 +83,7 @@ fun RegisterScreen(onAuthenticated: () -> Unit, onSwitchToLogin: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        BrandHeader(subtitle = "Create your free account — 2 topics.")
+        BrandHeader(subtitle = "Build Your Own Newsroom")
         Spacer(Modifier.height(28.dp))
 
         OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") }, singleLine = true, modifier = Modifier.fillMaxWidthField())

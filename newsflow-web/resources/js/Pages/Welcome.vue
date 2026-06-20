@@ -60,9 +60,11 @@ const sample = {
                         <h1
                             class="mt-5 font-serif text-5xl font-bold leading-tight tracking-tight text-ink sm:text-6xl"
                         >
-                            Your news.<br />
-                            <span class="text-brand-600">Only the topics you choose.</span>
+                            Build Your Own Newsroom
                         </h1>
+                        <p class="mt-4 font-serif text-2xl font-semibold text-brand-600">
+                            Your news. Only the topics you choose.
+                        </p>
                         <p class="mt-6 max-w-xl text-lg text-gray-600">
                             NewsFlow builds you a personal front page. Choose your
                             topics and every morning we deliver the day’s most

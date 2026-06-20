@@ -82,7 +82,7 @@ fun LoginScreen(onAuthenticated: () -> Unit, onSwitchToRegister: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        BrandHeader(subtitle = "Your news, only the topics you choose.")
+        BrandHeader(subtitle = "Build Your Own Newsroom")
         Spacer(Modifier.height(28.dp))
 
         OutlinedTextField(

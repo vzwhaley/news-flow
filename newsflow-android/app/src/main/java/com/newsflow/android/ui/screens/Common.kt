@@ -32,8 +32,8 @@ fun BrandHeader(subtitle: String? = null) {
         }
         Text("by moon whale media, llc", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         if (subtitle != null) {
-            Spacer(Modifier.height(8.dp))
-            Text(subtitle, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+            Spacer(Modifier.height(10.dp))
+            Text(subtitle, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onBackground, textAlign = TextAlign.Center)
         }
     }
 }
