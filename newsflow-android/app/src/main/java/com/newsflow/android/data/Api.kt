@@ -44,6 +44,9 @@ interface NewsFlowApi {
     @PATCH("api/topics/{id}/mutes")
     suspend fun setMutes(@Path("id") id: Long, @Body body: MuteRequest): Response<TopicResponse>
 
+    @PATCH("api/topics/{id}/digest")
+    suspend fun setDigest(@Path("id") id: Long, @Body body: DigestRequest): Response<TopicResponse>
+
     @POST("api/topics/{id}/read-all")
     suspend fun markAllRead(@Path("id") id: Long): Response<MarkedResponse>
 

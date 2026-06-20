@@ -152,6 +152,23 @@ class FeedViewModel : ViewModel() {
         viewModelScope.launch { runCatching { ServiceLocator.api.markRead(article.id) } }
     }
 
+    fun toggleRead(article: Article) {
+        val nowRead = article.id !in _state.value.readIds
+        _state.value = _state.value.copy(
+            readIds = if (nowRead) _state.value.readIds + article.id else _state.value.readIds - article.id,
+        )
+        viewModelScope.launch {
+            runCatching {
+                if (nowRead) ServiceLocator.api.markRead(article.id) else ServiceLocator.api.markUnread(article.id)
+            }
+        }
+    }
+
+    fun toggleDigest(topic: Topic) = viewModelScope.launch {
+        runCatching { ServiceLocator.api.setDigest(topic.id, com.newsflow.android.data.DigestRequest(!topic.includeInDigest)) }
+        load()
+    }
+
     fun save(article: Article) {
         if (article.fingerprint in _state.value.savedFps) return
         _state.value = _state.value.copy(savedFps = _state.value.savedFps + article.fingerprint)
@@ -239,6 +256,7 @@ fun FeedTab() {
                     onRefresh = { vm.refreshTopic(row.topic.id) },
                     onMarkAllRead = { vm.markAllRead(row.topic) },
                     onMute = { muteTarget = row.topic },
+                    onToggleDigest = { vm.toggleDigest(row.topic) },
                     onAddSubtopic = { subtopicParent = row.topic },
                     onMoveUp = { vm.moveTopic(row.topic, up = true) },
                     onMoveDown = { vm.moveTopic(row.topic, up = false) },
@@ -255,7 +273,7 @@ fun FeedTab() {
                         headline = a.headline, source = a.source, description = a.description,
                         isRead = a.id in state.readIds, isPro = state.isPro,
                         isSaved = a.fingerprint in state.savedFps, articleId = a.id,
-                        onOpen = { open(a) }, onToggleSave = { vm.save(a) },
+                        onOpen = { open(a) }, onToggleSave = { vm.save(a) }, onToggleRead = { vm.toggleRead(a) },
                     )
                 }
             }
@@ -300,6 +318,7 @@ private fun TopicHeader(
     onRefresh: () -> Unit,
     onMarkAllRead: () -> Unit,
     onMute: () -> Unit,
+    onToggleDigest: () -> Unit,
     onAddSubtopic: () -> Unit,
     onMoveUp: () -> Unit,
     onMoveDown: () -> Unit,
@@ -327,6 +346,10 @@ private fun TopicHeader(
                 if (isPro) {
                     DropdownMenuItem(text = { Text("Mute keywords…") }, onClick = { menuOpen = false; onMute() })
                 }
+                DropdownMenuItem(
+                    text = { Text(if (topic.includeInDigest) "Remove from digest" else "Add to daily digest") },
+                    onClick = { menuOpen = false; onToggleDigest() },
+                )
                 if (isTopLevel) {
                     DropdownMenuItem(text = { Text("Add subtopic…") }, onClick = { menuOpen = false; onAddSubtopic() })
                     DropdownMenuItem(text = { Text("Move up") }, onClick = { menuOpen = false; onMoveUp() })

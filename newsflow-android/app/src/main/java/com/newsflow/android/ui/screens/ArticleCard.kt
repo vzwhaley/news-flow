@@ -17,6 +17,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -55,6 +57,7 @@ fun ArticleCard(
     articleId: Long? = null,
     onOpen: () -> Unit,
     onToggleSave: (() -> Unit)? = null,
+    onToggleRead: (() -> Unit)? = null,
 ) {
     var tldr by remember { mutableStateOf<String?>(null) }
     var tldrLoading by remember { mutableStateOf(false) }
@@ -93,6 +96,15 @@ fun ArticleCard(
                     Text("$topicLabel · ", fontSize = 12.sp, color = BrandBlue)
                 }
                 Text(source ?: "", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                if (onToggleRead != null) {
+                    IconButton(onClick = onToggleRead, modifier = Modifier.size(28.dp)) {
+                        Icon(
+                            if (isRead) Icons.Filled.CheckCircle else Icons.Filled.RadioButtonUnchecked,
+                            contentDescription = if (isRead) "Mark as unread" else "Mark as read",
+                            tint = if (isRead) Color(0xFF16A34A) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
                 if (onToggleSave != null && (isPro || isSaved)) {
                     IconButton(onClick = onToggleSave, modifier = Modifier.size(28.dp)) {
                         Icon(

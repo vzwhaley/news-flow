@@ -118,6 +118,22 @@ final class FeedViewModel: ObservableObject {
         Task { _ = try? await api.markRead(article.id) }
     }
 
+    func toggleRead(_ article: Article) {
+        let nowRead = !readIds.contains(article.id)
+        if nowRead { readIds.insert(article.id) } else { readIds.remove(article.id) }
+        Task {
+            if nowRead { _ = try? await api.markRead(article.id) }
+            else { _ = try? await api.markUnread(article.id) }
+        }
+    }
+
+    func toggleDigest(_ topic: Topic) {
+        Task {
+            _ = try? await api.setDigestInclusion(topic.id, included: !topic.includeInDigest)
+            load()
+        }
+    }
+
     func save(_ article: Article) {
         guard !savedFps.contains(article.fingerprint) else { return }
         savedFps.insert(article.fingerprint)
@@ -263,6 +279,12 @@ struct FeedView: View {
                         Label("Mute keywords…", systemImage: "speaker.slash")
                     }
                 }
+                Button { vm.toggleDigest(row.topic) } label: {
+                    Label(
+                        row.topic.includeInDigest ? "Remove from digest" : "Add to daily digest",
+                        systemImage: row.topic.includeInDigest ? "envelope.badge" : "envelope"
+                    )
+                }
                 if row.topic.parentId == nil {
                     Button { subtopicParentId = row.topic.id; showSubtopicAlert = true } label: {
                         Label("Add subtopic…", systemImage: "plus")
@@ -295,7 +317,8 @@ struct FeedView: View {
             isSaved: vm.savedFps.contains(a.fingerprint),
             articleId: a.id,
             onOpen: { open(a) },
-            onToggleSave: { vm.save(a) }
+            onToggleSave: { vm.save(a) },
+            onToggleRead: { vm.toggleRead(a) }
         )
     }
 

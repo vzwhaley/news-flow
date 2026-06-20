@@ -66,6 +66,9 @@ final class RequestEncodingTests: XCTestCase {
 
         let reorder = try object(ReorderRequest(order: [3, 1, 2]))
         XCTAssertEqual(reorder["order"] as? [Int], [3, 1, 2])
+
+        let digest = try object(DigestRequest(includeInDigest: false))
+        XCTAssertEqual(digest["include_in_digest"] as? Bool, false)
     }
 
     func testSaveRequestSnakeCase() throws {

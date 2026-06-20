@@ -46,6 +46,10 @@ struct ReorderRequest: Encodable {
     let order: [Int]
 }
 
+struct DigestRequest: Encodable {
+    let includeInDigest: Bool
+}
+
 // MARK: - Responses (decoded with .convertFromSnakeCase)
 
 struct AuthResponse: Decodable {

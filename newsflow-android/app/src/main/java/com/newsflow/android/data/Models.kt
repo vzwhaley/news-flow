@@ -105,6 +105,9 @@ data class MuteRequest(@SerialName("mute_keywords") val muteKeywords: List<Strin
 data class ReorderRequest(val order: List<Long>)
 
 @Serializable
+data class DigestRequest(@SerialName("include_in_digest") val includeInDigest: Boolean)
+
+@Serializable
 data class TldrResponse(val tldr: String? = null, val cached: Boolean = false)
 
 @Serializable

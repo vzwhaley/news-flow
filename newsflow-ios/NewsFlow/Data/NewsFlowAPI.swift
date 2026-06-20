@@ -97,6 +97,10 @@ final class NewsFlowAPI {
         try await send("api/topics/\(id)/mutes", method: "PATCH", body: MuteRequest(muteKeywords: keywords))
     }
 
+    func setDigestInclusion(_ id: Int, included: Bool) async throws -> TopicResponse {
+        try await send("api/topics/\(id)/digest", method: "PATCH", body: DigestRequest(includeInDigest: included))
+    }
+
     @discardableResult
     func markAllRead(_ id: Int) async throws -> MarkedResponse {
         try await send("api/topics/\(id)/read-all", method: "POST")

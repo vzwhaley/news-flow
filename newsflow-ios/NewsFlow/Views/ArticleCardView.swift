@@ -14,6 +14,7 @@ struct ArticleCardView: View {
     var articleId: Int? = nil
     let onOpen: () -> Void
     var onToggleSave: (() -> Void)? = nil
+    var onToggleRead: (() -> Void)? = nil
 
     @State private var tldr: String?
     @State private var tldrLoading = false
@@ -34,6 +35,15 @@ struct ArticleCardView: View {
                     .font(.system(size: 12))
                     .foregroundColor(Brand.gray500)
                 Spacer(minLength: 0)
+                if let onToggleRead {
+                    Button(action: onToggleRead) {
+                        Image(systemName: isRead ? "checkmark.circle.fill" : "circle")
+                            .font(.system(size: 16))
+                            .foregroundColor(isRead ? .green : Brand.gray500)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(isRead ? "Mark as unread" : "Mark as read")
+                }
                 if let onToggleSave, isPro || isSaved {
                     Button(action: onToggleSave) {
                         Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
