@@ -98,10 +98,11 @@ const sample = {
                         </p>
                     </div>
 
-                    <!-- Sample paper -->
+                    <!-- Sample paper — links to the live World News demo feed -->
                     <div class="relative">
-                        <div
-                            class="overflow-hidden rounded-3xl bg-gradient-to-br from-white via-brand-50 to-indigo-100 p-5 shadow-2xl ring-1 ring-white/60"
+                        <Link
+                            :href="route('world-news')"
+                            class="group/paper block overflow-hidden rounded-3xl bg-gradient-to-br from-white via-brand-50 to-indigo-100 p-5 shadow-2xl ring-1 ring-white/60 transition duration-200 hover:-translate-y-0.5 hover:shadow-brand-500/30 hover:ring-brand-200"
                         >
                             <!-- Header -->
                             <div class="mb-4 flex items-center justify-between">
@@ -157,7 +158,13 @@ const sample = {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <!-- Click-through caption -->
+                            <div class="mt-4 flex items-center justify-center gap-1.5 text-sm font-semibold text-brand-700">
+                                See the Live World News Feed
+                                <svg class="h-4 w-4 transition-transform group-hover/paper:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                            </div>
+                        </Link>
                         <!-- Decorative gradient halo -->
                         <div
                             class="absolute -right-5 -top-5 -z-10 h-full w-full rounded-3xl bg-gradient-to-br from-brand-400/40 via-indigo-400/30 to-violet-400/30 blur-sm"

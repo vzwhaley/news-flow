@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SavedArticleController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\WorldNewsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -21,6 +22,10 @@ use Inertia\Inertia;
 Route::get('/', fn () => Inertia::render('Welcome'))->name('home');
 
 Route::get('/pricing', fn () => Inertia::render('Pricing'))->name('pricing');
+
+// Live, clickable "World News" demo feed — what a real topic feed looks like.
+Route::get('/world-news', [WorldNewsController::class, 'show'])->name('world-news');
+
 Route::get('/how-to-use', fn () => Inertia::render('HowToUse'))->name('how-to-use');
 Route::get('/faq', fn () => Inertia::render('Faq'))->name('faq');
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
@@ -30,7 +35,7 @@ Route::get('/terms', fn () => Inertia::render('Legal/Terms'))->name('terms');
 
 // SEO sitemap of the public pages.
 Route::get('/sitemap.xml', function () {
-    $paths = ['/', '/pricing', '/how-to-use', '/faq', '/about', '/privacy', '/terms'];
+    $paths = ['/', '/pricing', '/world-news', '/how-to-use', '/faq', '/about', '/privacy', '/terms'];
 
     $urls = collect($paths)
         ->map(fn ($p) => '  <url><loc>'.e(url($p)).'</loc></url>')
