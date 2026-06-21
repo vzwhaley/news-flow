@@ -53,15 +53,27 @@ function when(iso) {
                 </form>
 
                 <div v-if="articles && articles.data.length" class="mt-6">
-                    <ul class="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
-                        <li v-for="a in articles.data" :key="a.id" class="p-4">
-                            <div class="mb-1 flex items-center gap-2 text-xs text-gray-400">
-                                <span class="rounded-full bg-gray-100 px-2 py-0.5 font-medium text-gray-600">{{ a.topic_name }}</span>
-                                <span v-if="a.source">{{ a.source }}</span>
-                                <span>· archived {{ when(a.archived_at) }}</span>
+                    <ul class="space-y-3">
+                        <li
+                            v-for="a in articles.data"
+                            :key="a.id"
+                            class="group relative overflow-hidden rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-brand-50/60 p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-xl hover:shadow-brand-300/40"
+                        >
+                            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-500 via-indigo-500 to-violet-500 opacity-0 transition group-hover:opacity-100"></div>
+                            <div class="mb-1.5 flex flex-wrap items-center gap-2 text-xs">
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2 py-0.5 font-medium text-brand-700 ring-1 ring-inset ring-brand-100">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-brand-500 to-indigo-500"></span>
+                                    {{ a.topic_name }}
+                                </span>
+                                <span v-if="a.source" class="text-gray-400">{{ a.source }}</span>
+                                <span class="text-gray-400">· Archived {{ when(a.archived_at) }}</span>
                             </div>
-                            <a :href="a.url" target="_blank" rel="noopener noreferrer" class="font-serif text-base font-semibold leading-snug text-ink hover:text-brand-700">{{ a.headline }}</a>
+                            <a :href="a.url" target="_blank" rel="noopener noreferrer" class="font-serif text-base font-semibold leading-snug text-ink transition-colors group-hover:text-brand-700">{{ a.headline }}</a>
                             <p class="mt-1 line-clamp-2 text-sm text-gray-600">{{ a.description }}</p>
+                            <a :href="a.url" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 to-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm shadow-brand-500/20 transition hover:from-brand-700 hover:to-indigo-700">
+                                Read More
+                                <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                            </a>
                         </li>
                     </ul>
 

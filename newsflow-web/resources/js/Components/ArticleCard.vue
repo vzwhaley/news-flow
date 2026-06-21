@@ -81,21 +81,24 @@ async function toggleTldr() {
 
 <template>
     <article
-        class="group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-gradient-to-br from-white via-white to-brand-50/60 p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-brand-200 hover:shadow-lg"
+        class="group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-gradient-to-br from-white via-white to-brand-50/70 p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-brand-200 hover:shadow-xl hover:shadow-brand-300/40"
         :class="isRead ? 'border-gray-100 opacity-80' : 'border-gray-100'"
     >
         <!-- Accent bar revealed on hover -->
-        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-400 via-brand-600 to-brand-700 opacity-0 transition duration-200 group-hover:opacity-100"></div>
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-500 via-indigo-500 to-violet-500 opacity-0 transition duration-200 group-hover:opacity-100"></div>
 
-        <div class="mb-2 flex items-center gap-2 text-xs text-gray-400">
+        <div class="mb-2.5 flex items-center gap-2 text-xs text-gray-400">
             <span
                 v-if="rank !== null"
-                class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 text-[11px] font-semibold text-gray-500"
+                class="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-indigo-600 text-[11px] font-bold text-white shadow-sm"
             >
                 {{ rank }}
             </span>
-            <span class="font-medium text-gray-500">{{ article.source || host }}</span>
-            <span v-if="when">· {{ when }}</span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2 py-0.5 font-medium text-brand-700 ring-1 ring-inset ring-brand-100">
+                <span class="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-brand-500 to-indigo-500"></span>
+                {{ article.source || host }}
+            </span>
+            <span v-if="when" class="text-gray-400">· {{ when }}</span>
 
             <span class="ml-auto flex items-center gap-1">
                 <!-- Read / unread toggle -->
@@ -136,7 +139,7 @@ async function toggleTldr() {
             </span>
         </div>
 
-        <h4 class="font-serif text-lg font-semibold leading-snug" :class="isRead ? 'text-gray-400' : 'text-ink'">
+        <h4 class="font-serif text-lg font-semibold leading-snug transition-colors" :class="isRead ? 'text-gray-400' : 'text-ink group-hover:text-brand-700'">
             {{ article.headline }}
         </h4>
 
@@ -159,7 +162,7 @@ async function toggleTldr() {
                 target="_blank"
                 rel="noopener noreferrer"
                 @click="openArticle"
-                class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition duration-200 hover:from-brand-700 hover:to-brand-800 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+                class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-500/20 transition duration-200 hover:from-brand-700 hover:to-indigo-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
             >
                 Read More
                 <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
