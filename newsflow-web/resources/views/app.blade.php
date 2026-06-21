@@ -8,7 +8,7 @@
 
         <!-- SEO -->
         <meta name="description" content="NewsFlow builds you a personal newspaper. Follow only the topics you care about and get the day's most popular headlines on each — a more customizable Google News.">
-        <meta property="og:title" content="NewsFlow — your news, only the topics you choose">
+        <meta property="og:title" content="NewsFlow — Your own customized news topics, every day">
         <meta property="og:description" content="Build your own newsroom. Follow the topics you care about and get the day's most popular headlines on each, every morning.">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="NewsFlow">

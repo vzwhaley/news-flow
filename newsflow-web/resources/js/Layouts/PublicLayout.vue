@@ -160,7 +160,7 @@ function isActive(href) {
                     </p>
                     <p class="flex items-center gap-1.5 text-xs text-brand-400">
                         <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
-                        Your news, only the topics you choose
+                        Your own customized news topics, every day
                     </p>
                 </div>
             </div>
