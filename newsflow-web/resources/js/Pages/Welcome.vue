@@ -84,13 +84,13 @@ const sample = {
                                 :href="route('register')"
                                 class="rounded-lg bg-brand-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-brand-700"
                             >
-                                Start free — 2 topics
+                                Start Free — 2 Topics
                             </Link>
                             <Link
                                 :href="route('pricing')"
-                                class="rounded-lg px-6 py-3 text-base font-semibold text-white hover:text-brand-200"
+                                class="rounded-lg bg-green-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-green-700"
                             >
-                                See Pro plans →
+                                See Pro Plans →
                             </Link>
                         </div>
                         <p class="mt-4 text-sm text-gray-300">
@@ -195,13 +195,13 @@ const sample = {
                         :href="route('register')"
                         class="rounded-lg bg-white px-6 py-3 text-base font-semibold text-brand-700 shadow-sm hover:bg-brand-50"
                     >
-                        Get started free
+                        Get Started Free
                     </Link>
                     <Link
                         :href="route('pricing')"
                         class="rounded-lg bg-white/10 px-6 py-3 text-base font-semibold text-white ring-1 ring-inset ring-white/30 hover:bg-white/20"
                     >
-                        Compare plans
+                        Compare Plans
                     </Link>
                 </div>
             </div>

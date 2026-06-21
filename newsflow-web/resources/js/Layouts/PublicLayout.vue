@@ -9,7 +9,7 @@ const year = new Date().getFullYear();
 const mobileOpen = ref(false);
 
 const navLinks = [
-    { href: '/how-to-use', label: 'How it works' },
+    { href: '/how-to-use', label: 'How It Works' },
     { href: '/faq', label: 'FAQ' },
     { href: '/pricing', label: 'Pricing' },
     { href: '/about', label: 'About' },
@@ -55,9 +55,9 @@ function isActive(href) {
                             </Link>
                         </template>
                         <template v-else>
-                            <Link :href="route('login')" class="text-sm font-medium text-gray-600 hover:text-ink">Log in</Link>
+                            <Link :href="route('login')" class="text-sm font-medium text-gray-600 hover:text-ink">Log In</Link>
                             <Link :href="route('register')" class="rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700">
-                                Get started
+                                Get Started
                             </Link>
                         </template>
                     </div>
@@ -87,8 +87,8 @@ function isActive(href) {
                     <div class="mt-2 border-t border-gray-100 pt-2">
                         <Link v-if="user" :href="route('dashboard')" class="block rounded-md bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white">My NewsFlow</Link>
                         <template v-else>
-                            <Link :href="route('login')" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Log in</Link>
-                            <Link :href="route('register')" class="mt-1 block rounded-md bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white">Get started</Link>
+                            <Link :href="route('login')" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Log In</Link>
+                            <Link :href="route('register')" class="mt-1 block rounded-md bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white">Get Started</Link>
                         </template>
                     </div>
                 </div>
@@ -126,9 +126,9 @@ function isActive(href) {
                             <h3 class="text-xs font-semibold uppercase tracking-wider text-white">Product</h3>
                             <ul class="mt-4 space-y-3 text-sm">
                                 <li><Link href="/pricing" class="text-brand-200 transition-colors hover:text-white">Pricing</Link></li>
-                                <li><Link href="/how-to-use" class="text-brand-200 transition-colors hover:text-white">How it works</Link></li>
+                                <li><Link href="/how-to-use" class="text-brand-200 transition-colors hover:text-white">How It Works</Link></li>
                                 <li>
-                                    <Link v-if="!user" href="/register" class="text-brand-200 transition-colors hover:text-white">Create account</Link>
+                                    <Link v-if="!user" href="/register" class="text-brand-200 transition-colors hover:text-white">Create Account</Link>
                                     <Link v-else :href="route('dashboard')" class="text-brand-200 transition-colors hover:text-white">My NewsFlow</Link>
                                 </li>
                             </ul>
@@ -136,9 +136,9 @@ function isActive(href) {
                         <div>
                             <h3 class="text-xs font-semibold uppercase tracking-wider text-white">Resources</h3>
                             <ul class="mt-4 space-y-3 text-sm">
-                                <li><Link href="/how-to-use" class="text-brand-200 transition-colors hover:text-white">How to use</Link></li>
+                                <li><Link href="/how-to-use" class="text-brand-200 transition-colors hover:text-white">How to Use</Link></li>
                                 <li><Link href="/faq" class="text-brand-200 transition-colors hover:text-white">FAQ</Link></li>
-                                <li><a href="mailto:vzwhaley4709@gmail.com" class="text-brand-200 transition-colors hover:text-white">Contact support</a></li>
+                                <li><a href="mailto:vzwhaley4709@gmail.com" class="text-brand-200 transition-colors hover:text-white">Contact Support</a></li>
                             </ul>
                         </div>
                         <div>
