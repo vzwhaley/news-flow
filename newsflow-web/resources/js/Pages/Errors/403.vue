@@ -5,7 +5,7 @@ import ErrorPage from '@/Components/ErrorPage.vue';
 <template>
     <ErrorPage
         code="403"
-        title="Not allowed"
+        title="Not Allowed"
         message="You don’t have permission to view this page."
     />
 </template>

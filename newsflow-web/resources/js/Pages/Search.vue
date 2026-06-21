@@ -30,7 +30,7 @@ const hasResults = () => props.feed.length || props.saved.length;
         <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
             <!-- Pro upsell -->
             <div v-if="locked" class="rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
-                <h2 class="font-serif text-xl font-semibold text-ink">Search is a Pro feature</h2>
+                <h2 class="font-serif text-xl font-semibold text-ink">Search Is a Pro Feature</h2>
                 <p class="mx-auto mt-2 max-w-md text-sm text-gray-500">
                     Upgrade to search across all your topic feeds and saved articles at once.
                 </p>
@@ -58,7 +58,7 @@ const hasResults = () => props.feed.length || props.saved.length;
                     </p>
 
                     <section v-if="feed.length" class="mb-8">
-                        <h2 class="mb-3 font-serif text-lg font-bold text-ink">In your feeds <span class="text-sm font-normal text-gray-400">({{ feed.length }})</span></h2>
+                        <h2 class="mb-3 font-serif text-lg font-bold text-ink">In Your Feeds <span class="text-sm font-normal text-gray-400">({{ feed.length }})</span></h2>
                         <ul class="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
                             <li v-for="a in feed" :key="'f'+a.id" class="p-4">
                                 <div class="mb-1 flex items-center gap-2 text-xs text-gray-400">
@@ -73,7 +73,7 @@ const hasResults = () => props.feed.length || props.saved.length;
                     </section>
 
                     <section v-if="saved.length">
-                        <h2 class="mb-3 font-serif text-lg font-bold text-ink">In your saved <span class="text-sm font-normal text-gray-400">({{ saved.length }})</span></h2>
+                        <h2 class="mb-3 font-serif text-lg font-bold text-ink">In Your Saved <span class="text-sm font-normal text-gray-400">({{ saved.length }})</span></h2>
                         <ul class="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
                             <li v-for="a in saved" :key="'s'+a.id" class="p-4">
                                 <div class="mb-1 flex items-center gap-2 text-xs text-gray-400">

@@ -9,27 +9,27 @@ const pricing = computed(() => page.props.pricing ?? {});
 const steps = [
     {
         n: '1',
-        title: 'Pick your topics',
+        title: 'Pick Your Topics',
         body: 'World News, your team, a hobby, a company you watch — anything. Type it in plain English.',
     },
     {
         n: '2',
-        title: 'We scour the web at 6 AM',
+        title: 'We Scour the Web at 6 AM',
         body: 'Every morning NewsFlow finds the most-read, most-popular stories on each topic from the day before.',
     },
     {
         n: '3',
-        title: 'Read only what you care about',
+        title: 'Read Only What You Care About',
         body: 'Up to 12 fresh headlines per topic with a short summary and a one-tap Read More to the full article.',
     },
 ];
 
 const features = [
-    ['Your topics, your order', 'Arrange your personal newspaper exactly how you like it.'],
-    ['Always a full feed', 'Each topic keeps 12 articles — new stories push the oldest out.'],
-    ['Popularity-ranked', 'We blend news coverage with engagement signals to surface what people are actually reading.'],
-    ['No doomscrolling', 'No infinite feed, no topics you didn’t ask for. Just your headlines.'],
-    ['Niche-friendly', 'Following something obscure? We keep searching until your feed is full.'],
+    ['Your Topics, Your Order', 'Arrange your personal newspaper exactly how you like it.'],
+    ['Always a Full Feed', 'Each topic keeps 12 articles — new stories push the oldest out.'],
+    ['Popularity-Ranked', 'We blend news coverage with engagement signals to surface what people are actually reading.'],
+    ['No Doomscrolling', 'No infinite feed, no topics you didn’t ask for. Just your headlines.'],
+    ['Niche-Friendly', 'Following something obscure? We keep searching until your feed is full.'],
     ['Web, Android & iOS', 'Built API-first so your topics follow you across every device.'],
 ];
 
@@ -108,7 +108,7 @@ const sample = {
                                     {{ sample.topic }}
                                 </h3>
                                 <span class="rounded-full bg-white px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-brand-700 ring-1 ring-brand-100">
-                                    Today · 12 stories
+                                    Today · 12 Stories
                                 </span>
                             </div>
                             <div class="space-y-3">
@@ -126,7 +126,7 @@ const sample = {
                                     <div class="mt-3 flex items-center justify-between">
                                         <span class="text-xs font-medium text-gray-400">{{ a[1] }}</span>
                                         <span class="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-brand-600 to-brand-700 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition group-hover/card:from-brand-700 group-hover/card:to-brand-800">
-                                            Read more
+                                            Read More
                                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                                         </span>
                                     </div>
@@ -145,7 +145,7 @@ const sample = {
         <section class="border-y border-gray-100 bg-gray-50">
             <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                 <h2 class="text-center font-serif text-3xl font-bold text-ink">
-                    How NewsFlow works
+                    How NewsFlow Works
                 </h2>
                 <div class="mt-12 grid gap-8 md:grid-cols-3">
                     <div v-for="step in steps" :key="step.n" class="text-center">
@@ -164,7 +164,7 @@ const sample = {
         <!-- Features -->
         <section class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <h2 class="text-center font-serif text-3xl font-bold text-ink">
-                Everything you need, nothing you don’t
+                Everything You Need, Nothing You Don’t
             </h2>
             <div class="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
                 <div v-for="(f, i) in features" :key="i" class="flex gap-3">
@@ -183,7 +183,7 @@ const sample = {
         <section class="bg-gradient-to-br from-brand-600 to-brand-800">
             <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
                 <h2 class="font-serif text-3xl font-bold text-white sm:text-4xl">
-                    Build your newsroom today
+                    Build Your Newsroom Today
                 </h2>
                 <p class="mx-auto mt-4 max-w-2xl text-lg text-brand-100">
                     Start free with 2 topics. Go Pro for unlimited topics from

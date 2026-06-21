@@ -34,7 +34,7 @@ const proFeatures = [
         <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h1 class="font-serif text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-                    Simple pricing for your newsroom
+                    Simple Pricing for Your Newsroom
                 </h1>
                 <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
                     Start free with {{ freeTopics }} topics. Upgrade for unlimited
@@ -66,7 +66,7 @@ const proFeatures = [
                         :href="user ? route('dashboard') : route('register')"
                         class="mt-6 rounded-lg border border-gray-300 px-4 py-2.5 text-center text-sm font-semibold text-ink hover:bg-gray-50"
                     >
-                        {{ user ? 'Go to dashboard' : 'Get started free' }}
+                        {{ user ? 'Go to Dashboard' : 'Get Started Free' }}
                     </Link>
                 </div>
 
@@ -94,7 +94,7 @@ const proFeatures = [
                 <!-- YEARLY (highlighted) -->
                 <div class="relative flex flex-col rounded-2xl border-2 border-brand-600 bg-white p-6 shadow-lg">
                     <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-3 py-1 text-xs font-semibold text-white">
-                        Best value
+                        Best Value
                     </span>
                     <h3 class="text-lg font-semibold text-ink">Pro Yearly</h3>
                     <p class="mt-2 flex items-baseline gap-1">

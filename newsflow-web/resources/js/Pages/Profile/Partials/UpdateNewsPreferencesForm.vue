@@ -56,7 +56,7 @@ function submit() {
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900">News preferences</h2>
+            <h2 class="text-lg font-medium text-gray-900">News Preferences</h2>
             <p class="mt-1 text-sm text-gray-600">
                 Choose when your feed refreshes each day. We’ll gather the latest
                 popular stories on your topics at this hour, in your timezone.
@@ -65,7 +65,7 @@ function submit() {
 
         <form @submit.prevent="submit" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="refresh_hour" value="Daily refresh time" />
+                <InputLabel for="refresh_hour" value="Daily Refresh Time" />
                 <select id="refresh_hour" v-model="form.refresh_hour" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
                     <option v-for="h in hours" :key="h.value" :value="h.value">{{ h.label }}</option>
                 </select>
@@ -85,7 +85,7 @@ function submit() {
                 <label class="flex items-start gap-3">
                     <input type="checkbox" v-model="form.digest_enabled" class="mt-1 rounded border-gray-300 text-brand-600 shadow-sm focus:ring-brand-500" />
                     <span class="text-sm text-gray-700">
-                        <span class="font-medium text-gray-900">Email me a daily digest</span><br />
+                        <span class="font-medium text-gray-900">Email Me a Daily Digest</span><br />
                         A “Your NewsFlow is ready” email with the morning’s headlines, delivered at your refresh time.
                     </span>
                 </label>
@@ -95,13 +95,13 @@ function submit() {
                     <label class="flex items-start gap-3">
                         <input type="checkbox" v-model="form.digest_new_only" class="mt-1 rounded border-gray-300 text-brand-600 shadow-sm focus:ring-brand-500" />
                         <span class="text-sm text-gray-700">
-                            <span class="font-medium text-gray-900">Only new headlines</span><br />
+                            <span class="font-medium text-gray-900">Only New Headlines</span><br />
                             Include just the stories added since your last digest, not the full list. (You’ll get no email on days with nothing new.)
                         </span>
                     </label>
 
                     <div v-if="topics.length">
-                        <p class="text-sm font-medium text-gray-900">Topics to include</p>
+                        <p class="text-sm font-medium text-gray-900">Topics to Include</p>
                         <p class="text-xs text-gray-500">Pick which topics appear in your digest.</p>
                         <div class="mt-2 grid gap-1.5 sm:grid-cols-2">
                             <label v-for="t in topics" :key="t.id" class="flex items-center gap-2 text-sm text-gray-700">
@@ -116,18 +116,18 @@ function submit() {
             <!-- Pro: blocked sources + watchlist -->
             <div v-if="isPro" class="space-y-5 rounded-lg border border-gray-200 p-4">
                 <div class="flex items-center gap-2">
-                    <h3 class="text-sm font-semibold text-gray-900">Sources &amp; watchlist</h3>
+                    <h3 class="text-sm font-semibold text-gray-900">Sources &amp; Watchlist</h3>
                     <span class="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700">Pro</span>
                 </div>
 
                 <div>
-                    <InputLabel value="Blocked publishers" />
+                    <InputLabel value="Blocked Publishers" />
                     <p class="mb-2 text-xs text-gray-500">Hide articles from these publishers everywhere. Match by name or domain (e.g. “tabloid.com”).</p>
                     <TagInput v-model="form.blocked_sources" placeholder="e.g. Daily Tabloid" />
                 </div>
 
                 <div>
-                    <InputLabel value="Watch keywords" />
+                    <InputLabel value="Watch Keywords" />
                     <p class="mb-2 text-xs text-gray-500">Stories across any topic that mention these words get pinned to a “Watchlist” at the top of your feed.</p>
                     <TagInput v-model="form.watch_keywords" placeholder="e.g. recall, merger" />
                 </div>

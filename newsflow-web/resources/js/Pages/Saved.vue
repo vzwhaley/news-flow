@@ -20,7 +20,7 @@ function unsave(id) {
 
     <AuthenticatedLayout>
         <template #header>
-            <h1 class="font-serif text-2xl font-bold text-ink">Saved to read later</h1>
+            <h1 class="font-serif text-2xl font-bold text-ink">Saved to Read Later</h1>
         </template>
 
         <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
@@ -45,7 +45,7 @@ function unsave(id) {
                         <p class="mt-1 line-clamp-2 text-sm text-gray-600">{{ a.description }}</p>
                         <a :href="a.url" target="_blank" rel="noopener noreferrer"
                             class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:from-brand-700 hover:to-brand-800 hover:shadow-md">
-                            Read more
+                            Read More
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                         </a>
                     </div>
@@ -56,12 +56,12 @@ function unsave(id) {
             </div>
 
             <div v-else class="rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
-                <h3 class="font-serif text-xl font-semibold text-ink">Nothing saved yet</h3>
+                <h3 class="font-serif text-xl font-semibold text-ink">Nothing Saved Yet</h3>
                 <p class="mx-auto mt-2 max-w-md text-sm text-gray-500">
                     Tap the bookmark icon on any article in your feed to save it here for later.
                 </p>
                 <Link :href="route('dashboard')" class="mt-4 inline-block rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">
-                    Back to my feed
+                    Back to My Feed
                 </Link>
             </div>
         </div>

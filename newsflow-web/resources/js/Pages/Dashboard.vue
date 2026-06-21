@@ -153,7 +153,7 @@ function quickAdd(name) {
                             class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm font-semibold"
                             :class="selected === 'all' ? 'bg-brand-50 text-brand-700' : 'text-gray-700 hover:bg-gray-100'"
                         >
-                            All topics
+                            All Topics
                             <span class="text-xs text-gray-400">{{ user.topic_count }}</span>
                         </button>
 
@@ -255,7 +255,7 @@ function quickAdd(name) {
                                 class="rounded-lg border-gray-300 text-sm focus:border-brand-500 focus:ring-brand-500 disabled:bg-gray-100 sm:w-52"
                                 title="Add as a top-level topic or nest it under a category"
                             >
-                                <option value="">Top-level topic</option>
+                                <option value="">Top-Level Topic</option>
                                 <option v-for="t in topics" :key="t.id" :value="t.id">Under “{{ t.name }}”</option>
                             </select>
                             <button
@@ -263,7 +263,7 @@ function quickAdd(name) {
                                 :disabled="form.processing || atLimit || !form.name"
                                 class="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
                             >
-                                {{ form.processing ? 'Adding…' : 'Add topic' }}
+                                {{ form.processing ? 'Adding…' : 'Add Topic' }}
                             </button>
                         </form>
                         <InputError :message="form.errors.parent_id" class="mt-1" />
@@ -292,7 +292,7 @@ function quickAdd(name) {
 
                     <!-- Empty state -->
                     <div v-if="!topics.length" class="rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
-                        <h3 class="font-serif text-xl font-semibold text-ink">Your newsroom is empty</h3>
+                        <h3 class="font-serif text-xl font-semibold text-ink">Your Newsroom Is Empty</h3>
                         <p class="mx-auto mt-2 max-w-md text-sm text-gray-500">
                             Add your first topic above and we’ll pull the day’s most popular stories on it right away.
                             Tip: add a broad topic like “Information Technology”, then nest subtopics like “OpenAI” under it.
@@ -303,7 +303,7 @@ function quickAdd(name) {
                     <div v-if="watchlist.length && selected === 'all'" class="mb-8 rounded-2xl border border-amber-200 bg-amber-50/60 p-5">
                         <div class="mb-3 flex items-center gap-2">
                             <svg class="h-5 w-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" /></svg>
-                            <h2 class="font-serif text-lg font-bold text-ink">On your watchlist</h2>
+                            <h2 class="font-serif text-lg font-bold text-ink">On Your Watchlist</h2>
                             <span class="text-xs text-gray-500">matching: {{ watchKeywords.join(', ') }}</span>
                         </div>
                         <ul class="divide-y divide-amber-100">
@@ -333,7 +333,7 @@ function quickAdd(name) {
                             :class="unreadOnly ? 'border-brand-600 bg-brand-50 text-brand-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'"
                         >
                             <span class="inline-block h-2 w-2 rounded-full" :class="unreadOnly ? 'bg-brand-600' : 'bg-gray-300'"></span>
-                            Unread only
+                            Unread Only
                         </button>
                     </div>
 

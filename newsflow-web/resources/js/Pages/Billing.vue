@@ -45,7 +45,7 @@ function money(cents) {
 
     <AuthenticatedLayout>
         <template #header>
-            <h1 class="font-serif text-2xl font-bold text-ink">Billing & subscription</h1>
+            <h1 class="font-serif text-2xl font-bold text-ink">Billing & Subscription</h1>
         </template>
 
         <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
@@ -61,7 +61,7 @@ function money(cents) {
             <div class="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                        <p class="text-sm text-gray-500">Current plan</p>
+                        <p class="text-sm text-gray-500">Current Plan</p>
                         <p class="mt-1 font-serif text-2xl font-bold text-ink">{{ tierLabel }}</p>
                         <p v-if="isPro" class="mt-1 text-sm text-gray-500">Unlimited topics unlocked.</p>
                         <p v-else class="mt-1 text-sm text-gray-500">
@@ -89,7 +89,7 @@ function money(cents) {
                         @click="manage"
                         class="mt-3 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-ink hover:bg-gray-50"
                     >
-                        Manage subscription
+                        Manage Subscription
                     </button>
                 </div>
                 <div v-else-if="hasLifetime" class="mt-4 border-t border-gray-100 pt-4 text-sm text-gray-600">
@@ -109,7 +109,7 @@ function money(cents) {
             <!-- Upgrade options (hidden if already lifetime) -->
             <div v-if="!hasLifetime">
                 <h2 class="mb-4 font-serif text-xl font-bold text-ink">
-                    {{ isPro ? 'Change your plan' : 'Upgrade to Pro' }}
+                    {{ isPro ? 'Change Your Plan' : 'Upgrade to Pro' }}
                 </h2>
                 <div class="grid gap-6 md:grid-cols-3">
                     <!-- Monthly -->
@@ -131,7 +131,7 @@ function money(cents) {
                     <!-- Yearly -->
                     <div class="relative flex flex-col rounded-2xl border-2 border-brand-600 bg-white p-6 shadow-md">
                         <span class="absolute -top-3 left-6 rounded-full bg-brand-600 px-3 py-1 text-xs font-semibold text-white">
-                            Best value
+                            Best Value
                         </span>
                         <h3 class="font-semibold text-ink">Pro Yearly</h3>
                         <p class="mt-2 font-serif text-3xl font-bold text-ink">

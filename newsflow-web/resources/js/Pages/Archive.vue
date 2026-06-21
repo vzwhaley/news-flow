@@ -32,7 +32,7 @@ function when(iso) {
         <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
             <!-- Pro upsell -->
             <div v-if="locked" class="rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
-                <h2 class="font-serif text-xl font-semibold text-ink">Archive is a Pro feature</h2>
+                <h2 class="font-serif text-xl font-semibold text-ink">Archive Is a Pro Feature</h2>
                 <p class="mx-auto mt-2 max-w-md text-sm text-gray-500">
                     With Pro, stories that rotate out of your feeds are kept here so you can always catch up on what you missed.
                 </p>
@@ -82,7 +82,7 @@ function when(iso) {
                 </div>
 
                 <div v-else class="mt-6 rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
-                    <h3 class="font-serif text-lg font-semibold text-ink">{{ q ? 'No matches in your archive' : 'Your archive is empty' }}</h3>
+                    <h3 class="font-serif text-lg font-semibold text-ink">{{ q ? 'No Matches in Your Archive' : 'Your Archive Is Empty' }}</h3>
                     <p class="mx-auto mt-2 max-w-md text-sm text-gray-500">
                         {{ q ? 'Try a different search.' : 'As your feeds refresh each day, older stories will collect here automatically.' }}
                     </p>

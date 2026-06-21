@@ -23,7 +23,7 @@ defineProps({
 
         <div class="mt-8 flex gap-3">
             <Link href="/" class="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">
-                Go home
+                Go Home
             </Link>
             <Link :href="route('dashboard')" class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gray-50">
                 My NewsFlow

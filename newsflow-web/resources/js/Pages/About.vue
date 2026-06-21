@@ -3,10 +3,10 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 
 const values = [
-    ['You choose the news', 'No infinite feed, no algorithmic rabbit holes. You pick the topics; we bring the headlines.'],
-    ['Signal over noise', 'We surface what people are actually reading, then get out of your way.'],
-    ['Respect for your time', 'A finite, finishable feed — read what matters and get on with your day.'],
-    ['Privacy first', 'We never sell your data. Your topics are yours.'],
+    ['You Choose the News', 'No infinite feed, no algorithmic rabbit holes. You pick the topics; we bring the headlines.'],
+    ['Signal over Noise', 'We surface what people are actually reading, then get out of your way.'],
+    ['Respect for Your Time', 'A finite, finishable feed — read what matters and get on with your day.'],
+    ['Privacy First', 'We never sell your data. Your topics are yours.'],
 ];
 </script>
 
@@ -34,7 +34,7 @@ const values = [
                 didn’t pick.
             </p>
 
-            <h2 class="mt-12 font-serif text-2xl font-bold text-ink">What we believe</h2>
+            <h2 class="mt-12 font-serif text-2xl font-bold text-ink">What We Believe</h2>
             <div class="mt-6 grid gap-6 sm:grid-cols-2">
                 <div v-for="(v, i) in values" :key="i" class="rounded-xl border border-gray-200 bg-white p-5">
                     <h3 class="font-semibold text-ink">{{ v[0] }}</h3>
@@ -51,10 +51,10 @@ const values = [
             </p>
 
             <div class="mt-12 rounded-2xl bg-ink p-8 text-center">
-                <h2 class="font-serif text-2xl font-bold text-white">Build your newsroom today</h2>
+                <h2 class="font-serif text-2xl font-bold text-white">Build Your Newsroom Today</h2>
                 <p class="mx-auto mt-2 max-w-lg text-gray-300">Start free with two topics. Go Pro any time for unlimited.</p>
                 <Link :href="route('register')" class="mt-5 inline-block rounded-lg bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700">
-                    Get started free
+                    Get Started Free
                 </Link>
             </div>
         </section>

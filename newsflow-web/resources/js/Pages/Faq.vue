@@ -67,7 +67,7 @@ const faqs = computed(() => [
         <section class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h1 class="font-serif text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-                    Frequently asked questions
+                    Frequently Asked Questions
                 </h1>
                 <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
                     Everything you need to know about NewsFlow.
@@ -88,9 +88,9 @@ const faqs = computed(() => [
 
             <div class="mt-12 text-center">
                 <p class="text-gray-600">Still have a question?</p>
-                <a href="mailto:vzwhaley4709@gmail.com" class="font-semibold text-brand-600">Email us</a>
+                <a href="mailto:vzwhaley4709@gmail.com" class="font-semibold text-brand-600">Email Us</a>
                 <span class="text-gray-400"> · </span>
-                <Link :href="route('how-to-use')" class="font-semibold text-brand-600">Read the guide</Link>
+                <Link :href="route('how-to-use')" class="font-semibold text-brand-600">Read the Guide</Link>
             </div>
         </section>
     </PublicLayout>

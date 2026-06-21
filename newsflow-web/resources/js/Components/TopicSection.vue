@@ -130,7 +130,7 @@ function saveMutes() {
                 <button v-if="unreadCount" @click="markAllRead" title="Mark all read"
                     class="inline-flex items-center gap-1 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    Mark read
+                    Mark Read
                 </button>
 
                 <!-- Mute keywords (Pro) -->
@@ -154,7 +154,7 @@ function saveMutes() {
 
         <!-- Mute editor -->
         <div v-if="showMutes" class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
-            <p class="text-sm font-medium text-ink">Mute keywords for “{{ topic.name }}”</p>
+            <p class="text-sm font-medium text-ink">Mute Keywords for “{{ topic.name }}”</p>
             <p class="text-xs text-gray-500">Articles mentioning these words are hidden from this topic.</p>
             <div class="mt-3 flex flex-wrap gap-2">
                 <span v-for="w in keywords" :key="w" class="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-xs text-gray-700 ring-1 ring-gray-200">
