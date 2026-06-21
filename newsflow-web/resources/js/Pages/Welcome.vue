@@ -64,7 +64,7 @@ const sample = {
                         <span
                             class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-white ring-1 ring-inset ring-white/20"
                         >
-                            A more customizable Google News
+                            Your News — Only Topics You Care About
                         </span>
                         <h1
                             class="mt-5 font-serif text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl"
