@@ -26,14 +26,23 @@ struct ArticleCardView: View {
         VStack(alignment: .leading, spacing: 6) {
             // Source row + bookmark
             HStack(spacing: 0) {
-                if let topicLabel {
-                    Text("\(topicLabel) · ")
-                        .font(.system(size: 12))
-                        .foregroundColor(Brand.blue)
+                let chipLabel = [topicLabel, (source?.isEmpty == false ? source : nil)]
+                    .compactMap { $0 }.joined(separator: " · ")
+                if !chipLabel.isEmpty {
+                    HStack(spacing: 5) {
+                        Circle()
+                            .fill(Brand.dot)
+                            .frame(width: 6, height: 6)
+                        Text(chipLabel)
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundColor(Brand.blue)
+                            .lineLimit(1)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Brand.blue.opacity(0.10))
+                    .clipShape(Capsule())
                 }
-                Text(source ?? "")
-                    .font(.system(size: 12))
-                    .foregroundColor(Brand.gray500)
                 Spacer(minLength: 0)
                 if let onToggleRead {
                     Button(action: onToggleRead) {

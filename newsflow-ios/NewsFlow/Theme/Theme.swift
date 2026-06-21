@@ -6,15 +6,23 @@ enum Brand {
     static let blue      = Color(hex: 0x2563EB)   // primary
     static let blueDark  = Color(hex: 0x1D4ED8)
     static let blueLight = Color(hex: 0xEFF6FF)
+    static let indigo    = Color(hex: 0x4F46E5)
     static let ink       = Color(hex: 0x0F172A)
     static let gray500   = Color(hex: 0x64748B)
     static let gray100   = Color(hex: 0xE2E8F0)
 
     /// Gradient used on the "Read more" pill, matching the web/Android button.
     static let pill = LinearGradient(
-        colors: [blue, blueDark],
+        colors: [blue, indigo],
         startPoint: .leading,
         endPoint: .trailing
+    )
+
+    /// Small brand→indigo gradient for accent dots/badges.
+    static let dot = LinearGradient(
+        colors: [blue, indigo],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
     )
 }
 

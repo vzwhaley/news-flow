@@ -3,6 +3,7 @@ package com.newsflow.android.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -92,10 +93,26 @@ fun ArticleCard(
                 .padding(16.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (topicLabel != null) {
-                    Text("$topicLabel · ", fontSize = 12.sp, color = BrandBlue)
+                val chipLabel = listOfNotNull(topicLabel, source?.takeIf { it.isNotBlank() }).joinToString(" · ")
+                if (chipLabel.isNotEmpty()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(BrandBlue.copy(alpha = 0.10f))
+                            .padding(horizontal = 8.dp, vertical = 3.dp),
+                    ) {
+                        Box(
+                            Modifier
+                                .size(6.dp)
+                                .clip(RoundedCornerShape(50))
+                                .background(Brush.linearGradient(listOf(BrandBlue, BrandIndigo))),
+                        )
+                        Spacer(Modifier.width(5.dp))
+                        Text(chipLabel, fontSize = 11.sp, fontWeight = FontWeight.Medium, color = BrandBlue, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
                 }
-                Text(source ?: "", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
                 if (onToggleRead != null) {
                     IconButton(onClick = onToggleRead, modifier = Modifier.size(28.dp)) {
                         Icon(
@@ -142,7 +159,7 @@ fun ArticleCard(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(Brush.horizontalGradient(listOf(BrandBlue, Color(0xFF1D4ED8))))
+                        .background(Brush.horizontalGradient(listOf(BrandBlue, BrandIndigo)))
                         .clickable(onClick = onOpen)
                         .padding(horizontal = 16.dp, vertical = 9.dp),
                 ) {

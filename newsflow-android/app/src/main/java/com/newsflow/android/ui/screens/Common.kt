@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 val BrandBlue = Color(0xFF2563EB)
+val BrandIndigo = Color(0xFF4F46E5)
 
 /** Form fields fill the width but cap on large screens. */
 fun Modifier.fillMaxWidthField(): Modifier = this.fillMaxWidth().widthIn(max = 480.dp)
