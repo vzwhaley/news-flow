@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
+import CookieConsent from '@/Components/CookieConsent.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -174,5 +175,7 @@ const tierLabel = computed(() => {
         <main>
             <slot />
         </main>
+
+        <CookieConsent />
     </div>
 </template>

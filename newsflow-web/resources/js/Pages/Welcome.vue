@@ -1,4 +1,5 @@
 <script setup>
+import AdSlot from '@/Components/AdSlot.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -174,6 +175,11 @@ const sample = {
             </div>
         </section>
 
+        <!-- Ad (non-Pro visitors) -->
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <AdSlot slot="home_top" format="horizontal" />
+        </div>
+
         <!-- How it works -->
         <section class="border-y border-gray-100 bg-gray-50">
             <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -211,6 +217,11 @@ const sample = {
                 </div>
             </div>
         </section>
+
+        <!-- Ad (non-Pro visitors) -->
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <AdSlot slot="home_mid" format="horizontal" />
+        </div>
 
         <!-- CTA -->
         <section class="bg-gradient-to-br from-brand-600 to-brand-800">

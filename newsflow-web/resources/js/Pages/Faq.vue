@@ -1,4 +1,5 @@
 <script setup>
+import AdSlot from '@/Components/AdSlot.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
@@ -64,6 +65,9 @@ const faqs = computed(() => [
     <Head title="FAQ" />
 
     <PublicLayout>
+        <div class="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+            <AdSlot slot="faq_top" format="horizontal" />
+        </div>
         <section class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h1 class="font-serif text-4xl font-bold tracking-tight text-ink sm:text-5xl">

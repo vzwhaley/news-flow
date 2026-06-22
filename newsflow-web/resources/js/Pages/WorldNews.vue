@@ -1,4 +1,5 @@
 <script setup>
+import AdSlot from '@/Components/AdSlot.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 
@@ -57,6 +58,8 @@ function when(iso) {
                     </Link>
                 </div>
             </div>
+
+            <AdSlot slot="world_news_top" format="horizontal" />
 
             <!-- Article list -->
             <div v-if="articles.length" class="mt-6 space-y-3">

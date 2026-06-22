@@ -1,5 +1,7 @@
 <script setup>
+import AdSlot from '@/Components/AdSlot.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
+import CookieConsent from '@/Components/CookieConsent.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 
@@ -21,6 +23,11 @@ function isActive(href) {
     } catch {
         return false;
     }
+}
+
+// Re-open the cookie/ads consent banner (CookieConsent.vue listens).
+function openCookieSettings() {
+    window.dispatchEvent(new CustomEvent('nf:open-cookie-settings'));
 }
 </script>
 
@@ -100,6 +107,11 @@ function isActive(href) {
             <slot />
         </main>
 
+        <!-- Site-wide marketing ad (non-Pro visitors only) -->
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <AdSlot slot="marketing" format="horizontal" />
+        </div>
+
         <!-- Footer -->
         <footer class="bg-ink text-white">
             <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -147,6 +159,7 @@ function isActive(href) {
                                 <li><Link href="/about" class="text-brand-200 transition-colors hover:text-white">About</Link></li>
                                 <li><Link href="/privacy" class="text-brand-200 transition-colors hover:text-white">Privacy</Link></li>
                                 <li><Link href="/terms" class="text-brand-200 transition-colors hover:text-white">Terms</Link></li>
+                                <li><button type="button" @click="openCookieSettings" class="text-brand-200 transition-colors hover:text-white">Cookie Preferences</button></li>
                             </ul>
                         </div>
                     </div>
@@ -165,5 +178,7 @@ function isActive(href) {
                 </div>
             </div>
         </footer>
+
+        <CookieConsent />
     </div>
 </template>

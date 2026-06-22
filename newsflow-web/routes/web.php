@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdsTxtController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BillingController;
@@ -32,6 +33,11 @@ Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
 Route::get('/privacy', fn () => Inertia::render('Legal/Privacy'))->name('privacy');
 Route::get('/terms', fn () => Inertia::render('Legal/Terms'))->name('terms');
+
+// Authorized-seller declarations, built from configured publisher IDs.
+// ads.txt = AdSense (this site); app-ads.txt = AdMob (the mobile apps).
+Route::get('/ads.txt', [AdsTxtController::class, 'ads']);
+Route::get('/app-ads.txt', [AdsTxtController::class, 'appAds']);
 
 // SEO sitemap of the public pages.
 Route::get('/sitemap.xml', function () {

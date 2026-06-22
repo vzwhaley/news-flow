@@ -1,4 +1,5 @@
 <script setup>
+import AdSlot from '@/Components/AdSlot.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -28,6 +29,8 @@ const hasResults = () => props.feed.length || props.saved.length;
         </template>
 
         <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+            <AdSlot slot="search_top" format="horizontal" />
+
             <!-- Pro upsell -->
             <div v-if="locked" class="rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
                 <h2 class="font-serif text-xl font-semibold text-ink">Search Is a Pro Feature</h2>

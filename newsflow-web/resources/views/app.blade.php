@@ -4,6 +4,17 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        {{-- Google AdSense loader — site verification + ad serving. Rendered
+             from config('adsense.client') (ADSENSE_CLIENT), the same publisher
+             ID that powers /ads.txt and every <ins> ad unit. Pro users still
+             load this (it verifies the site) but receive no slot IDs, so no ad
+             ever renders for them. --}}
+        @if (config('adsense.client'))
+            <script async
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('adsense.client') }}"
+                    crossorigin="anonymous"></script>
+        @endif
+
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- SEO -->

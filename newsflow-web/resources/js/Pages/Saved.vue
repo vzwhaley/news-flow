@@ -1,4 +1,5 @@
 <script setup>
+import AdSlot from '@/Components/AdSlot.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -24,6 +25,8 @@ function unsave(id) {
         </template>
 
         <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+            <AdSlot slot="saved_top" format="horizontal" />
+
             <!-- Pro upsell for free users -->
             <div v-if="!isPro" class="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-brand-50 px-4 py-3">
                 <p class="text-sm text-brand-800">

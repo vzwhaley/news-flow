@@ -1,4 +1,5 @@
 <script setup>
+import AdSlot from '@/Components/AdSlot.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TopicSection from '@/Components/TopicSection.vue';
 import InputError from '@/Components/InputError.vue';
@@ -144,6 +145,8 @@ function quickAdd(name) {
         </template>
 
         <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <AdSlot slot="dashboard_top" format="horizontal" />
+
             <div class="lg:flex lg:gap-8">
                 <!-- Left-column topic navigation (desktop) -->
                 <aside v-if="topics.length" class="hidden lg:block lg:w-60 lg:shrink-0">
@@ -352,6 +355,8 @@ function quickAdd(name) {
                     />
                 </div>
             </div>
+
+            <AdSlot slot="dashboard_bottom" />
         </div>
     </AuthenticatedLayout>
 </template>
