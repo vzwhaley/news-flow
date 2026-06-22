@@ -31,14 +31,18 @@ const slotId = computed(() => adsense.value.slots?.[props.slot] ?? null);
 const showsAds = computed(() => !!adsense.value.shows_ads);
 const liveAdAvailable = computed(() => showsAds.value && !!adsense.value.client && !!slotId.value);
 
+// Leaderboard = fixed 728 × 90 (centered, shrinks on narrow screens). Matches
+// the sibling sites (FileFlow / AstroFlow / My Emergency Screen / Cardback Cantina).
+const isLeaderboard = computed(() => props.format === 'horizontal');
+
 const placeholder = computed(() => {
     switch (props.format) {
         case 'rectangle':
-            return { size: 'Medium Rectangle · 300 × 250', cls: 'min-h-[250px]' };
+            return { size: 'Medium Rectangle · 300 × 250', cls: 'mx-auto h-[250px] w-[300px] max-w-full' };
         case 'vertical':
-            return { size: 'Skyscraper · 160 × 600', cls: 'min-h-[480px]' };
+            return { size: 'Skyscraper · 160 × 600', cls: 'mx-auto h-[600px] w-[160px] max-w-full' };
         case 'horizontal':
-            return { size: 'Leaderboard · 728 × 90', cls: 'min-h-[90px]' };
+            return { size: 'Leaderboard · 728 × 90', cls: 'mx-auto h-[90px] w-[728px] max-w-full' };
         default:
             return { size: 'Responsive Unit', cls: 'min-h-[120px]' };
     }
@@ -92,9 +96,19 @@ watch(consent, activate);
 
 <template>
     <!-- Live AdSense ad -->
-    <div v-if="mode === 'live'" class="my-6" role="complementary" aria-label="Advertisement">
+    <div v-if="mode === 'live'" class="my-6 text-center" role="complementary" aria-label="Advertisement">
         <p class="mb-1 text-center text-[10px] uppercase tracking-widest text-gray-400">Advertisement</p>
+        <!-- Leaderboard = fixed 728×90; other formats stay responsive. -->
         <ins
+            v-if="isLeaderboard"
+            ref="insEl"
+            class="adsbygoogle mx-auto"
+            style="display: inline-block; width: 728px; height: 90px; max-width: 100%"
+            :data-ad-client="adsense.client"
+            :data-ad-slot="slotId"
+        />
+        <ins
+            v-else
             ref="insEl"
             class="adsbygoogle block"
             style="display: block"
