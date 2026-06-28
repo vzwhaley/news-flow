@@ -1,7 +1,8 @@
 <script setup>
 import AdSlot from '@/Components/AdSlot.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import SeoHead from '@/Components/SeoHead.vue';
+import { Link } from '@inertiajs/vue3';
 
 defineProps({
     topic: { type: String, default: 'World News' },
@@ -20,7 +21,11 @@ function when(iso) {
 </script>
 
 <template>
-    <Head title="World News — A Live NewsFlow Feed" />
+    <SeoHead
+        title="World News — A Live Feed"
+        description="A live example of a NewsFlow topic feed — today's most popular World News headlines from a dozen publishers, refreshed daily. Build your own free."
+        path="/world-news"
+    />
 
     <PublicLayout>
         <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">

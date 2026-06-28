@@ -1,7 +1,8 @@
 <script setup>
 import AdSlot from '@/Components/AdSlot.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import SeoHead from '@/Components/SeoHead.vue';
+import { Link } from '@inertiajs/vue3';
 
 const values = [
     ['You Choose the News', 'No infinite feed, no algorithmic rabbit holes. You pick the topics; we bring the headlines.'],
@@ -12,7 +13,11 @@ const values = [
 </script>
 
 <template>
-    <Head title="About NewsFlow" />
+    <SeoHead
+        title="About"
+        description="About NewsFlow by Moon Whale Media — a more focused way to follow the news: only the topics you choose, ranked by what people are actually reading."
+        path="/about"
+    />
 
     <PublicLayout>
         <div class="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">

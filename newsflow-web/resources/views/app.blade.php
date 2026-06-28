@@ -15,15 +15,25 @@
                     crossorigin="anonymous"></script>
         @endif
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>NewsFlow™ — Your own customized news topics, every day</title>
 
-        <!-- SEO -->
-        <meta name="description" content="NewsFlow builds you a personal newspaper. Follow only the topics you care about and get the day's most popular headlines on each — a more customizable Google News.">
-        <meta property="og:title" content="NewsFlow — Your own customized news topics, every day">
-        <meta property="og:description" content="Build your own newsroom. Follow the topics you care about and get the day's most popular headlines on each, every morning.">
+        {{-- Server-rendered SEO defaults. Because the app is Inertia (no SSR),
+             these are what JS-less social scrapers (iMessage/Slack/Facebook/
+             LinkedIn) read for link previews. Per-page <SeoHead> enhances title,
+             canonical, OG and JSON-LD for crawlers that execute JS (Google). --}}
+        <meta name="description" content="Build your own newsroom. Follow only the topics you care about and get the day's most popular headlines on each, every morning — free for 2 topics.">
         <meta property="og:type" content="website">
-        <meta property="og:site_name" content="NewsFlow">
+        <meta property="og:site_name" content="NewsFlow™">
+        <meta property="og:title" content="NewsFlow™ — Your own customized news topics, every day">
+        <meta property="og:description" content="Follow only the topics you care about and get the day's most popular headlines on each, every morning.">
+        <meta property="og:url" content="https://newsflow.app{{ request()->getPathInfo() }}">
+        <meta property="og:image" content="https://newsflow.app/img/og-default.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="NewsFlow™ — Your own customized news topics, every day">
+        <meta name="twitter:description" content="Follow only the topics you care about and get the day's most popular headlines on each, every morning.">
+        <meta name="twitter:image" content="https://newsflow.app/img/og-default.png">
         <meta name="theme-color" content="#2563eb">
 
         <!-- Favicons — the logo's newspaper mark on a brand-blue tile -->

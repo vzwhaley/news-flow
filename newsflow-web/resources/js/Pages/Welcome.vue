@@ -1,11 +1,47 @@
 <script setup>
 import AdSlot from '@/Components/AdSlot.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import SeoHead from '@/Components/SeoHead.vue';
+import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const page = usePage();
 const pricing = computed(() => page.props.pricing ?? {});
+
+const seoJsonLd = computed(() => {
+    const site = 'https://newsflow.app';
+    return [
+        {
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'NewsFlow',
+            url: site,
+            logo: `${site}/favicon.svg`,
+            parentOrganization: {
+                '@type': 'Organization',
+                name: 'Moon Whale Media, LLC',
+                url: 'https://moonwhale.media',
+            },
+        },
+        {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'NewsFlow',
+            url: site,
+        },
+        {
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: 'NewsFlow',
+            applicationCategory: 'NewsApplication',
+            operatingSystem: 'Web, iOS, Android',
+            offers: [
+                { '@type': 'Offer', price: '0', priceCurrency: 'USD', name: 'Free' },
+                { '@type': 'Offer', price: String(pricing.value.monthly ?? '4.99'), priceCurrency: 'USD', name: 'Pro Monthly' },
+            ],
+        },
+    ];
+});
 
 const steps = [
     {
@@ -45,7 +81,12 @@ const sample = {
 </script>
 
 <template>
-    <Head title="Build your own newsroom" />
+    <SeoHead
+        title="Build Your Own Newsroom"
+        description="Build your own newsroom. Follow only the topics you care about and get the day's most popular headlines on each — every morning. Free for 2 topics."
+        path="/"
+        :json-ld="seoJsonLd"
+    />
 
     <PublicLayout>
         <!-- Hero -->

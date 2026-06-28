@@ -1,6 +1,7 @@
 <script setup>
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, usePage } from '@inertiajs/vue3';
+import SeoHead from '@/Components/SeoHead.vue';
+import { usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const updated = 'June 16, 2026';
@@ -9,7 +10,11 @@ const pricing = computed(() => page.props.pricing ?? {});
 </script>
 
 <template>
-    <Head title="Terms of Service" />
+    <SeoHead
+        title="Terms of Service"
+        description="NewsFlow's terms of service — your account, subscriptions and billing, news content and third parties, acceptable use, and disclaimers."
+        path="/terms"
+    />
 
     <PublicLayout>
         <article class="prose prose-slate mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">

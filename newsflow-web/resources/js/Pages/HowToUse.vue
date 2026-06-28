@@ -1,6 +1,7 @@
 <script setup>
 import AdSlot from '@/Components/AdSlot.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
+import SeoHead from '@/Components/SeoHead.vue';
 import AppMockup from '@/Components/AppMockup.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -72,7 +73,11 @@ const sections = [
 </script>
 
 <template>
-    <Head title="How to use NewsFlow" />
+    <SeoHead
+        title="How to Use NewsFlow"
+        description="How NewsFlow works: pick your topics, and every morning we gather the day's most popular headlines on each into your own personal newspaper."
+        path="/how-to-use"
+    />
 
     <PublicLayout>
         <div class="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">

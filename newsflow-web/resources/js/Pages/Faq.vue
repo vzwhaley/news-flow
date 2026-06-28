@@ -1,7 +1,8 @@
 <script setup>
 import AdSlot from '@/Components/AdSlot.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import SeoHead from '@/Components/SeoHead.vue';
+import { Link, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 
 const page = usePage();
@@ -59,10 +60,26 @@ const faqs = computed(() => [
         a: 'We never sell your data. We store your account, topics, and subscription status (via Stripe). See our Privacy Policy for details.',
     },
 ]);
+
+// FAQPage structured data → eligible for Google's FAQ rich result.
+const seoJsonLd = computed(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.value.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+}));
 </script>
 
 <template>
-    <Head title="FAQ" />
+    <SeoHead
+        title="FAQ"
+        description="Answers to common questions about NewsFlow — how we find stories, topic limits, refresh timing, Pro plans, billing, and how we handle your data."
+        path="/faq"
+        :json-ld="seoJsonLd"
+    />
 
     <PublicLayout>
         <div class="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">

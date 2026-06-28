@@ -1,6 +1,7 @@
 <script setup>
 import AdSlot from '@/Components/AdSlot.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
+import SeoHead from '@/Components/SeoHead.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
@@ -29,7 +30,11 @@ const proFeatures = [
 </script>
 
 <template>
-    <Head title="Pricing" />
+    <SeoHead
+        title="Pricing"
+        description="NewsFlow is free forever for 2 topics. Go Pro for unlimited topics, AI TL;DR summaries, search, archive, and an ad-free experience from $4.99/mo."
+        path="/pricing"
+    />
 
     <PublicLayout>
         <div class="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">

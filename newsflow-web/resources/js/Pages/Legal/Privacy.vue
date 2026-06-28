@@ -1,12 +1,16 @@
 <script setup>
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const updated = 'June 16, 2026';
 </script>
 
 <template>
-    <Head title="Privacy Policy" />
+    <SeoHead
+        title="Privacy Policy"
+        description="NewsFlow's privacy policy — what we collect, how news content and advertising work, the service providers we use, and your choices."
+        path="/privacy"
+    />
 
     <PublicLayout>
         <article class="prose prose-slate mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
