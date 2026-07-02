@@ -29,6 +29,9 @@ interface NewsFlowApi {
     @POST("api/auth/logout")
     suspend fun logout(): Response<MessageResponse>
 
+    @POST("api/auth/resend-verification")
+    suspend fun resendVerification(): Response<MessageResponse>
+
     @GET("api/me")
     suspend fun me(): Response<MeResponse>
 

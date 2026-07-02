@@ -2,6 +2,7 @@ package com.newsflow.android.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
@@ -59,6 +61,8 @@ data class FeedUiState(
     val loadFailed: Boolean = false,
     val refreshing: Boolean = false,
     val isPro: Boolean = false,
+    val emailVerified: Boolean = true,
+    val verificationSent: Boolean = false,
     val topicLimit: Int? = null,   // null = unlimited (Pro) or unknown
     val topicCount: Int = 0,
     val topics: List<Topic> = emptyList(),
@@ -106,6 +110,8 @@ class FeedViewModel : ViewModel() {
         _state.value = FeedUiState(
             loading = false,
             isPro = user?.isPro == true,
+            emailVerified = user?.emailVerified ?: true,
+            verificationSent = _state.value.verificationSent,
             topicLimit = user?.topicLimit,
             topicCount = user?.topicCount ?: body.topics.size,
             topics = body.topics,
@@ -113,6 +119,11 @@ class FeedViewModel : ViewModel() {
             readIds = read,
             savedFps = body.savedFingerprints.toSet(),
         )
+    }
+
+    fun resendVerification() = viewModelScope.launch {
+        runCatching { ServiceLocator.api.resendVerification() }
+        _state.value = _state.value.copy(verificationSent = true)
     }
 
     fun addTopic(name: String, parentId: Long? = null) {
@@ -140,7 +151,8 @@ class FeedViewModel : ViewModel() {
         val tmp = list[i]; list[i] = list[j]; list[j] = tmp
         _state.value = _state.value.copy(topics = list)
         viewModelScope.launch {
-            runCatching { ServiceLocator.api.reorderTopics(com.newsflow.android.data.ReorderRequest(list.map { it.id })) }
+            val res = runCatching { ServiceLocator.api.reorderTopics(com.newsflow.android.data.ReorderRequest(list.map { it.id })) }.getOrNull()
+            if (res == null || !res.isSuccessful) load()   // server rejected — resync the list
         }
     }
 
@@ -262,6 +274,26 @@ fun FeedTab() {
         contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        if (!state.emailVerified) {
+            item {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(12.dp))
+                        .padding(14.dp),
+                ) {
+                    Text("Please verify your email", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Text(
+                        "We sent a link to your inbox — verifying keeps your account recoverable.",
+                        fontSize = 13.sp, color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                    TextButton(onClick = { vm.resendVerification() }, enabled = !state.verificationSent) {
+                        Text(if (state.verificationSent) "Sent — check your inbox" else "Resend email", fontSize = 13.sp)
+                    }
+                }
+            }
+        }
+
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 OutlinedTextField(value = newTopic, onValueChange = { newTopic = it }, label = { Text("Add a topic") }, singleLine = true, modifier = Modifier.weight(1f))
