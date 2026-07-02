@@ -59,6 +59,11 @@ final class NewsFlowAPI {
         try await send("api/auth/logout", method: "POST")
     }
 
+    @discardableResult
+    func resendVerification() async throws -> MessageResponse {
+        try await send("api/auth/resend-verification", method: "POST")
+    }
+
     // MARK: - Profile & feed
 
     func me() async throws -> MeResponse {

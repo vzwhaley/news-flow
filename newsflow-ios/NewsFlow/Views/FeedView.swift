@@ -11,6 +11,8 @@ final class FeedViewModel: ObservableObject {
     @Published var loading = true
     @Published var loadFailed = false
     @Published var isPro = false
+    @Published var emailVerified = true
+    @Published var verificationSent = false
     @Published var topicLimit: Int?   // nil = unlimited (Pro) or unknown
     @Published var topicCount = 0
     @Published var topics: [Topic] = []
@@ -59,6 +61,7 @@ final class FeedViewModel: ObservableObject {
         }
         let read = feed.topics.flatMap { collectArticles($0) }.filter { $0.isRead }.map { $0.id }
         isPro = me?.user.isPro ?? false
+        emailVerified = me?.user.emailVerified ?? true
         topicLimit = me?.user.topicLimit
         topicCount = me?.user.topicCount ?? feed.topics.count
         topics = feed.topics
@@ -66,6 +69,13 @@ final class FeedViewModel: ObservableObject {
         readIds = Set(read)
         savedFps = Set(feed.savedFingerprints)
         loading = false
+    }
+
+    func resendVerification() {
+        Task {
+            _ = try? await api.resendVerification()
+            verificationSent = true
+        }
     }
 
     func addTopic(_ name: String, parentId: Int? = nil) {
@@ -96,7 +106,10 @@ final class FeedViewModel: ObservableObject {
         guard j >= 0, j < topics.count else { return }
         topics.swapAt(i, j)
         let order = topics.map { $0.id }
-        Task { _ = try? await api.reorderTopics(order) }
+        Task {
+            do { _ = try await api.reorderTopics(order) }
+            catch { await loadAsync() }   // server rejected — resync the list
+        }
     }
 
     func deleteTopic(_ id: Int) {
@@ -206,6 +219,10 @@ struct FeedView: View {
             } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 10) {
+                        if !vm.emailVerified {
+                            verifyEmailBanner
+                        }
+
                         addTopicRow
 
                         if !vm.watchlist.isEmpty {
@@ -262,6 +279,27 @@ struct FeedView: View {
         } message: {
             Text("Add a topic nested under this category.")
         }
+    }
+
+    private var verifyEmailBanner: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Please verify your email")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(Brand.ink)
+            Text("We sent a link to your inbox — verifying keeps your account recoverable.")
+                .font(.system(size: 13))
+                .foregroundColor(Brand.gray500)
+            Button(vm.verificationSent ? "Sent — check your inbox" : "Resend email") {
+                vm.resendVerification()
+            }
+            .font(.system(size: 13, weight: .semibold))
+            .disabled(vm.verificationSent)
+            .padding(.top, 2)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Brand.blueLight)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     private var addTopicRow: some View {
