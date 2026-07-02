@@ -22,12 +22,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,14 +56,21 @@ import kotlinx.coroutines.launch
 
 data class FeedUiState(
     val loading: Boolean = true,
+    val loadFailed: Boolean = false,
+    val refreshing: Boolean = false,
     val isPro: Boolean = false,
+    val topicLimit: Int? = null,   // null = unlimited (Pro) or unknown
+    val topicCount: Int = 0,
     val topics: List<Topic> = emptyList(),
     val watchlist: List<Article> = emptyList(),
     val readIds: Set<Long> = emptySet(),
     val savedFps: Set<String> = emptySet(),
     val busy: Boolean = false,
     val error: String? = null,
-)
+) {
+    /** Free user sitting at their topic cap right now. */
+    val atTopicLimit: Boolean get() = topicLimit != null && topicCount >= topicLimit
+}
 
 data class FeedRow(val topic: Topic, val parentName: String?)
 
@@ -71,26 +80,39 @@ class FeedViewModel : ViewModel() {
 
     init { load() }
 
-    fun load() {
-        viewModelScope.launch {
-            _state.value = _state.value.copy(loading = true, error = null)
-            val me = runCatching { ServiceLocator.api.me() }.getOrNull()
-            val feed = runCatching { ServiceLocator.api.feed() }.getOrNull()
-            if (feed == null || !feed.isSuccessful) {
-                _state.value = _state.value.copy(loading = false, error = "Couldn't load your feed.")
-                return@launch
-            }
-            val body = feed.body()!!
-            val read = body.topics.flatMap { collectArticles(it) }.filter { it.isRead }.map { it.id }.toSet()
-            _state.value = FeedUiState(
-                loading = false,
-                isPro = me?.body()?.user?.isPro == true,
-                topics = body.topics,
-                watchlist = body.watchlist,
-                readIds = read,
-                savedFps = body.savedFingerprints.toSet(),
+    fun load() = viewModelScope.launch { doLoad(fullScreenSpinner = _state.value.topics.isEmpty()) }
+
+    /** Pull-to-refresh reload — keeps the current list on screen while fetching. */
+    fun refresh() = viewModelScope.launch { doLoad(fullScreenSpinner = false) }
+
+    private suspend fun doLoad(fullScreenSpinner: Boolean) {
+        _state.value = _state.value.copy(
+            loading = fullScreenSpinner, refreshing = !fullScreenSpinner,
+            error = null, loadFailed = false,
+        )
+        val me = runCatching { ServiceLocator.api.me() }.getOrNull()
+        val feed = runCatching { ServiceLocator.api.feed() }.getOrNull()
+        val body = feed?.takeIf { it.isSuccessful }?.body()
+        if (body == null) {
+            _state.value = _state.value.copy(
+                loading = false, refreshing = false,
+                loadFailed = _state.value.topics.isEmpty(),
+                error = "Couldn't load your feed.",
             )
+            return
         }
+        val user = me?.body()?.user
+        val read = body.topics.flatMap { collectArticles(it) }.filter { it.isRead }.map { it.id }.toSet()
+        _state.value = FeedUiState(
+            loading = false,
+            isPro = user?.isPro == true,
+            topicLimit = user?.topicLimit,
+            topicCount = user?.topicCount ?: body.topics.size,
+            topics = body.topics,
+            watchlist = body.watchlist,
+            readIds = read,
+            savedFps = body.savedFingerprints.toSet(),
+        )
     }
 
     fun addTopic(name: String, parentId: Long? = null) {
@@ -101,7 +123,7 @@ class FeedViewModel : ViewModel() {
             _state.value = _state.value.copy(busy = false)
             when {
                 res != null && res.isSuccessful -> load()
-                res?.code() == 422 -> _state.value = _state.value.copy(error = "Free accounts can follow up to 2 topics. Upgrade to Pro for unlimited.")
+                res?.code() == 422 -> _state.value = _state.value.copy(error = "Free accounts can follow up to ${_state.value.topicLimit ?: 2} topics. Upgrade to Pro for unlimited.")
                 else -> _state.value = _state.value.copy(error = "Couldn't add that topic.")
             }
         }
@@ -173,13 +195,17 @@ class FeedViewModel : ViewModel() {
         if (article.fingerprint in _state.value.savedFps) return
         _state.value = _state.value.copy(savedFps = _state.value.savedFps + article.fingerprint)
         viewModelScope.launch {
-            runCatching {
+            val res = runCatching {
                 ServiceLocator.api.save(
                     SaveRequest(
                         headline = article.headline, description = article.description, url = article.url,
                         source = article.source, imageUrl = article.imageUrl, topicName = article.topicName,
                     ),
                 )
+            }.getOrNull()
+            if (res == null || !res.isSuccessful) {
+                // Roll back the optimistic bookmark so the UI matches reality.
+                _state.value = _state.value.copy(savedFps = _state.value.savedFps - article.fingerprint)
             }
         }
     }
@@ -188,6 +214,7 @@ class FeedViewModel : ViewModel() {
         t.articles + t.children.flatMap { collectArticles(it) }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedTab() {
     val vm: FeedViewModel = viewModel()
@@ -216,7 +243,20 @@ fun FeedTab() {
         return
     }
 
-    Box(Modifier.fillMaxSize()) {
+    if (state.loadFailed) {
+        Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
+            Text("Couldn't load your feed.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.height(12.dp))
+            Button(onClick = { vm.load() }) { Text("Try again") }
+        }
+        return
+    }
+
+    PullToRefreshBox(
+        isRefreshing = state.refreshing,
+        onRefresh = { vm.refresh() },
+        modifier = Modifier.fillMaxSize(),
+    ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
@@ -226,7 +266,16 @@ fun FeedTab() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 OutlinedTextField(value = newTopic, onValueChange = { newTopic = it }, label = { Text("Add a topic") }, singleLine = true, modifier = Modifier.weight(1f))
                 Spacer(Modifier.width(8.dp))
-                Button(onClick = { vm.addTopic(newTopic); newTopic = "" }, enabled = !state.busy && newTopic.isNotBlank()) { Text("Add") }
+                Button(onClick = { vm.addTopic(newTopic); newTopic = "" }, enabled = !state.busy && newTopic.isNotBlank() && !state.atTopicLimit) { Text("Add") }
+            }
+            state.topicLimit?.let { limit ->
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    if (state.atTopicLimit) "You've used all $limit free topics — upgrade to Pro for unlimited."
+                    else "${state.topicCount} of $limit topics used",
+                    fontSize = 12.sp,
+                    color = if (state.atTopicLimit) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             if (state.error != null) {
                 Spacer(Modifier.height(6.dp))

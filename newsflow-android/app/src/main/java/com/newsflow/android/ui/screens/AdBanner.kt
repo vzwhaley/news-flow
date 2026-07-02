@@ -41,7 +41,10 @@ fun AdBanner(isPro: Boolean, placement: String = "feed_tab", modifier: Modifier 
     // Trust the server's explicit show=false once config has loaded.
     if (payload != null && payload?.ads?.show == false) return
 
-    val unitId = payload?.ads?.units?.get(placement) ?: TEST_BANNER_UNIT
+    // Dev builds fall back to Google's official test unit; release builds only
+    // ever load a real unit ID delivered by the server — never the test one.
+    val unitId = payload?.ads?.units?.get(placement)
+        ?: if (BuildConfig.DEBUG) TEST_BANNER_UNIT else return
     val context = LocalContext.current
 
     Column(

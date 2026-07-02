@@ -26,6 +26,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +45,8 @@ import com.newsflow.android.BuildConfig
 import com.newsflow.android.data.PreferencesRequest
 import com.newsflow.android.data.ServiceLocator
 import com.newsflow.android.data.User
+import com.newsflow.android.push.PushRegistrar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -60,6 +63,7 @@ class AccountViewModel : ViewModel() {
         val blockedSources: List<String> = emptyList(),
         val saving: Boolean = false,
         val saved: Boolean = false,
+        val saveError: String? = null,
     )
 
     private val _state = MutableStateFlow(State())
@@ -74,6 +78,18 @@ class AccountViewModel : ViewModel() {
                     pushEnabled = u.pushEnabled,
                     watchKeywords = u.watchKeywords, blockedSources = u.blockedSources,
                 )
+            }
+        }
+    }
+
+    /**
+     * Re-fetch just the identity/plan (e.g. returning to the tab after an
+     * upgrade) without clobbering in-progress edits to the form fields.
+     */
+    fun refreshUser() {
+        viewModelScope.launch {
+            runCatching { ServiceLocator.api.me() }.getOrNull()?.body()?.user?.let { u ->
+                _state.value = _state.value.copy(user = u)
             }
         }
     }
@@ -101,8 +117,8 @@ class AccountViewModel : ViewModel() {
     fun save() {
         val s = _state.value
         viewModelScope.launch {
-            _state.value = s.copy(saving = true)
-            runCatching {
+            _state.value = s.copy(saving = true, saveError = null)
+            val res = runCatching {
                 ServiceLocator.api.updatePreferences(
                     PreferencesRequest(
                         refreshHour = s.refreshHour,
@@ -114,8 +130,19 @@ class AccountViewModel : ViewModel() {
                         blockedSources = s.blockedSources,
                     ),
                 )
+            }.getOrNull()
+            if (res != null && res.isSuccessful) {
+                // Keep the backend token registry in sync with the toggle.
+                if (s.pushEnabled) PushRegistrar.register() else PushRegistrar.unregister()
+                _state.value = _state.value.copy(saving = false, saved = true)
+                delay(2_500)
+                _state.value = _state.value.copy(saved = false)
+            } else {
+                _state.value = _state.value.copy(
+                    saving = false, saved = false,
+                    saveError = "Couldn't save your changes. Please try again.",
+                )
             }
-            _state.value = _state.value.copy(saving = false, saved = true)
         }
     }
 }
@@ -132,6 +159,10 @@ fun AccountTab(onSignOut: () -> Unit) {
     val state by vm.state.collectAsState()
     val context = LocalContext.current
     val user = state.user
+
+    // Refresh the identity/plan each time the tab is opened so an upgrade made
+    // elsewhere (web checkout) shows up without an app restart.
+    LaunchedEffect(Unit) { vm.refreshUser() }
 
     val tierLabel = when {
         user == null -> ""
@@ -232,6 +263,9 @@ fun AccountTab(onSignOut: () -> Unit) {
             }
             if (state.saved) {
                 Text("  Saved.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            state.saveError?.let {
+                Text("  $it", fontSize = 13.sp, color = MaterialTheme.colorScheme.error)
             }
         }
 

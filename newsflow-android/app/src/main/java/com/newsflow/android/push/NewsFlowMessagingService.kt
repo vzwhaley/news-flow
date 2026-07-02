@@ -43,7 +43,7 @@ class NewsFlowMessagingService : FirebaseMessagingService() {
         val intent = if (url != null) {
             Intent(Intent.ACTION_VIEW, Uri.parse(url))
         } else {
-            packageManager.getLaunchIntentForPackage(packageName)
+            packageManager.getLaunchIntentForPackage(packageName) ?: return
         }
         val pending = PendingIntent.getActivity(
             this, 0, intent,
@@ -59,7 +59,10 @@ class NewsFlowMessagingService : FirebaseMessagingService() {
             .setContentIntent(pending)
             .build()
 
+        // Stable per-message ID so two pushes arriving in the same millisecond
+        // don't overwrite each other (and repeats of one message collapse).
+        val id = (message.messageId ?: (url ?: "") + body).hashCode()
         getSystemService(NotificationManager::class.java)
-            ?.notify(System.currentTimeMillis().toInt(), notification)
+            ?.notify(id, notification)
     }
 }
